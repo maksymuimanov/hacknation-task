@@ -1,4 +1,4 @@
-package io.team.backend.entity;
+package io.team.backend.entity.document;
 
 import io.team.backend.entity.info.AccidentInfo;
 import jakarta.persistence.*;
@@ -7,17 +7,24 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 @Getter @Setter
 @RequiredArgsConstructor
 @Entity
-@Table(name = "document_sessions")
-public class DocumentSession {
+@Table(name = "documents")
+public class Document {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    @ManyToOne
+    private PersonalData personalData;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<WitnessData> witnesses;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<AdditionalData> additionalDocuments;
     @OneToOne
     private AccidentInfo accidentInfo;
 
@@ -28,7 +35,7 @@ public class DocumentSession {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        DocumentSession that = (DocumentSession) o;
+        Document that = (Document) o;
         return getId() != null && Objects.equals(getId(), that.getId());
     }
 
