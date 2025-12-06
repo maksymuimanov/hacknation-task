@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @Table(name = "births")
 public class Birth {
     @Id
+    @GeneratedValue
     private Long id;
     @Temporal(TemporalType.DATE)
     private LocalDate date;

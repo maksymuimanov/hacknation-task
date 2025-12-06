@@ -25,7 +25,7 @@ public class AccidentInfo {
     private UUID id;
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime dateTime;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Address location;
     @Temporal(TemporalType.TIME)
     private LocalTime startTime;
@@ -36,17 +36,17 @@ public class AccidentInfo {
     private String description;
     private String causeDescription;
     private String locationDescription;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Help firstAid;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Help investigation;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private EquipmentInfo equipmentInfo;
     @OneToMany(cascade = CascadeType.ALL)
     private List<Witness> witnesses;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Person person;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Document document;
 
     @Override

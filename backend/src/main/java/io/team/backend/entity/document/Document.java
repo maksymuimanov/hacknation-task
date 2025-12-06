@@ -19,13 +19,9 @@ public class Document {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    @ManyToOne
-    private PersonalData personalData;
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<WitnessData> witnesses;
     @OneToMany(cascade = CascadeType.ALL)
     private List<AdditionalData> additionalDocuments;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private AccidentInfo accidentInfo;
 
     @Override

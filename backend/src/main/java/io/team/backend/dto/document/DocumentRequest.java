@@ -10,8 +10,5 @@ import java.util.UUID;
 public class DocumentRequest {
     @NotNull
     private UUID accidentId;
-    @NotNull
-    private PersonalDataDocumentRequest personalData;
-    private List<WitnessDataDocumentRequest> witnesses;
     private List<AdditionalDataDocumentRequest> additionalDocuments;
 }

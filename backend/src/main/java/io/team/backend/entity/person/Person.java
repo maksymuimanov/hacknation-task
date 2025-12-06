@@ -21,19 +21,19 @@ public class Person {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String pesel;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Identity identity;
     private String name;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Birth birth;
     private String phoneNumber;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Address residentialAddress;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Address lastKnownAddress;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private CorrespondenceAddress correspondenceAddress;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<AccidentInfo> accidentInfos;
 
     @Override

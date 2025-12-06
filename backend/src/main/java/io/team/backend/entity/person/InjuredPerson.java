@@ -1,6 +1,7 @@
 package io.team.backend.entity.person;
 
 import io.team.backend.entity.common.Address;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -13,8 +14,8 @@ import lombok.Setter;
 @Entity
 @Table(name = "injured_persons")
 public class InjuredPerson extends Person {
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Address businessAddress;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private ProxyPerson proxyPerson;
 }

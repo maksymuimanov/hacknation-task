@@ -13,10 +13,11 @@ import org.hibernate.type.YesNoConverter;
 @Table(name = "helps")
 public class Help {
     @Id
+    @GeneratedValue
     private Long id;
     @Convert(converter = YesNoConverter.class)
     private Boolean provided;
     private String name;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Address address;
 }

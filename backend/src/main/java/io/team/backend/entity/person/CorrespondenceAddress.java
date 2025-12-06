@@ -14,9 +14,9 @@ import org.springframework.data.domain.Persistable;
 public class CorrespondenceAddress extends Address {
     @Enumerated(EnumType.STRING)
     private Type type;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private PosteRestante posteRestante;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private PoBox poBox;
 
     public enum Type {

@@ -1,5 +1,6 @@
 package io.team.backend.entity.person;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -15,7 +16,7 @@ import java.util.List;
 @Entity
 @Table(name = "proxy_persons")
 public class ProxyPerson extends Person {
-    @OneToMany
     @ToString.Exclude
+    @OneToMany(cascade = CascadeType.ALL)
     private List<InjuredPerson> injuredPersons;
 }
