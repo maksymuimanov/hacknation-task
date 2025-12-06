@@ -12,11 +12,11 @@ public class PersonRequest {
     @NotBlank
     private String pesel;
     @NotNull
-    private DocumentRequest documentRequest;
+    private IdentityRequest identity;
     @NotBlank
     private String name;
     @NotNull
-    private BirthRequest birthRequest;
+    private BirthRequest birth;
     @NotBlank
     private String phoneNumber;
     @NotNull
