@@ -12,7 +12,7 @@ export const BusinessAddressStep = () => {
   return (
     <div className="space-y-4">
       <div className="space-y-1.5">
-        <Label htmlFor="businessAddress.street">Ulica *</Label>
+        <Label htmlFor="businessAddress.street">Ulica <span className="text-destructive">*</span></Label>
         <Input id="businessAddress.street" placeholder="ul. Biznesowa" {...register("businessAddress.street")} />
         {errors.businessAddress?.street && (
           <p className="text-xs text-destructive">{errors.businessAddress.street.message}</p>
@@ -21,7 +21,7 @@ export const BusinessAddressStep = () => {
 
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1.5">
-          <Label htmlFor="businessAddress.houseNumber">Nr domu *</Label>
+          <Label htmlFor="businessAddress.houseNumber">Numer domu <span className="text-destructive">*</span></Label>
           <Input
             id="businessAddress.houseNumber"
             type="number"
@@ -33,7 +33,7 @@ export const BusinessAddressStep = () => {
           )}
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="businessAddress.apartmentNumber">Nr lokalu</Label>
+          <Label htmlFor="businessAddress.apartmentNumber">Numer lokalu (opcjonalnie)</Label>
           <Input
             id="businessAddress.apartmentNumber"
             type="number"
@@ -45,24 +45,19 @@ export const BusinessAddressStep = () => {
 
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1.5">
-          <Label htmlFor="businessAddress.zipCode">Kod pocztowy *</Label>
+          <Label htmlFor="businessAddress.zipCode">Kod pocztowy <span className="text-destructive">*</span></Label>
           <Input id="businessAddress.zipCode" placeholder="00-001" {...register("businessAddress.zipCode")} />
           {errors.businessAddress?.zipCode && (
             <p className="text-xs text-destructive">{errors.businessAddress.zipCode.message}</p>
           )}
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="businessAddress.city">Miejscowość *</Label>
-          <Input id="businessAddress.city" placeholder="Warszawa" {...register("businessAddress.city")} />
+          <Label htmlFor="businessAddress.city">Miejscowość <span className="text-destructive">*</span></Label>
+          <Input id="businessAddress.city" placeholder="Bydgoszcz" {...register("businessAddress.city")} />
           {errors.businessAddress?.city && (
             <p className="text-xs text-destructive">{errors.businessAddress.city.message}</p>
           )}
         </div>
-      </div>
-
-      <div className="space-y-1.5">
-        <Label htmlFor="businessAddress.country">Państwo</Label>
-        <Input id="businessAddress.country" placeholder="Polska" {...register("businessAddress.country")} />
       </div>
     </div>
   );

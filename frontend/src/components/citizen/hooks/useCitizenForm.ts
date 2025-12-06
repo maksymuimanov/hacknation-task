@@ -34,27 +34,17 @@ export const useCitizenForm = () => {
       },
       phoneNumber: "",
       residentialAddress: {
-        country: "Polska",
         street: "",
         city: "",
-        houseNumber: undefined,
-        apartmentNumber: undefined,
-        zipCode: "",
-      },
-      lastKnownAddress: {
-        country: "Polska",
-        street: "",
-        city: "",
-        houseNumber: undefined,
-        apartmentNumber: undefined,
+        houseNumber: "",
+        apartmentNumber: "",
         zipCode: "",
       },
       correspondenceAddress: {
-        country: "Polska",
         street: "",
         city: "",
-        houseNumber: undefined,
-        apartmentNumber: undefined,
+        houseNumber: "",
+        apartmentNumber: "",
         zipCode: "",
         type: "ADDRESS",
         posteRestante: {
@@ -68,11 +58,10 @@ export const useCitizenForm = () => {
         },
       },
       businessAddress: {
-        country: "Polska",
         street: "",
         city: "",
-        houseNumber: undefined,
-        apartmentNumber: undefined,
+        houseNumber: "",
+        apartmentNumber: "",
         zipCode: "",
       },
       livesAbroad: false,
@@ -89,10 +78,6 @@ export const useCitizenForm = () => {
         date: rest.birth.date,
       },
     };
-
-    if (!livesAbroad) {
-      payload.lastKnownAddress = undefined;
-    }
 
     return payload;
   };
@@ -133,10 +118,6 @@ export const useCitizenForm = () => {
   const shouldSkipStep = (stepIndex: number): boolean => {
     const step = STEPS[stepIndex];
     if (!step) return false;
-
-    if (step.id === 4) {
-      return !form.watch("livesAbroad");
-    }
 
     return false;
   };

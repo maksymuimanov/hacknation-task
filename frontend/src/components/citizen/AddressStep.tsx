@@ -7,15 +7,13 @@ export const AddressStep = () => {
   const {
     register,
     formState: { errors },
-    watch,
     setValue,
   } = useFormContext<CitizenSchema>();
-  const livesAbroad = watch("livesAbroad");
 
   return (
     <div className="space-y-4">
       <div className="space-y-1.5">
-        <Label htmlFor="residentialAddress.street">Ulica *</Label>
+        <Label htmlFor="residentialAddress.street">Ulica <span className="text-destructive">*</span></Label>
         <Input
           id="residentialAddress.street"
           placeholder="ul. Przykładowa"
@@ -28,10 +26,10 @@ export const AddressStep = () => {
 
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1.5">
-          <Label htmlFor="residentialAddress.houseNumber">Nr domu *</Label>
+          <Label htmlFor="residentialAddress.houseNumber">Numer domu <span className="text-destructive">*</span></Label>
           <Input
             id="residentialAddress.houseNumber"
-            type="number"
+            type="text"
             placeholder="12"
             {...register("residentialAddress.houseNumber")}
           />
@@ -40,10 +38,10 @@ export const AddressStep = () => {
           )}
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="residentialAddress.apartmentNumber">Nr lokalu</Label>
+          <Label htmlFor="residentialAddress.apartmentNumber">Numer lokalu (opcjonalne)</Label>
           <Input
             id="residentialAddress.apartmentNumber"
-            type="number"
+            type="text"
             placeholder="5"
             {...register("residentialAddress.apartmentNumber")}
           />
@@ -52,38 +50,33 @@ export const AddressStep = () => {
 
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1.5">
-          <Label htmlFor="residentialAddress.zipCode">Kod pocztowy *</Label>
+          <Label htmlFor="residentialAddress.zipCode">Kod pocztowy <span className="text-destructive">*</span></Label>
           <Input id="residentialAddress.zipCode" placeholder="00-001" {...register("residentialAddress.zipCode")} />
           {errors.residentialAddress?.zipCode && (
             <p className="text-xs text-destructive">{errors.residentialAddress.zipCode.message}</p>
           )}
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="residentialAddress.city">Miejscowość *</Label>
-          <Input id="residentialAddress.city" placeholder="Warszawa" {...register("residentialAddress.city")} />
+          <Label htmlFor="residentialAddress.city">Miejscowość <span className="text-destructive">*</span></Label>
+          <Input id="residentialAddress.city" placeholder="Bydgoszcz" {...register("residentialAddress.city")} />
           {errors.residentialAddress?.city && (
             <p className="text-xs text-destructive">{errors.residentialAddress.city.message}</p>
           )}
         </div>
       </div>
 
-      <div className="space-y-1.5">
-        <Label htmlFor="residentialAddress.country">Państwo</Label>
-        <Input id="residentialAddress.country" placeholder="Polska" {...register("residentialAddress.country")} />
-      </div>
-
-      <label className="flex items-center gap-2 pt-2 cursor-pointer">
+      <label className="flex items-center gap-2 pt-2 cursor-pointer m-0">
         <input
           type="checkbox"
-          checked={livesAbroad}
+          checked={false}
           onChange={(e) => setValue("livesAbroad", e.target.checked)}
           className="h-4 w-4 rounded border-input accent-primary"
         />
         <span className="text-sm leading-relaxed">
-          Mieszkam za granicą{" "}
-          <span className="text-muted-foreground">(podany adres będzie ostatnim miejscem pobytu w Polsce)</span>
+          Mieszkam za granicą
         </span>
       </label>
+      <span className="text-sm text-muted-foreground">(podany adres będzie ostatnim miejscem zamieszkania w Polsce)</span>
     </div>
   );
 };

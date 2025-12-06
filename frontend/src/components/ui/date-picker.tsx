@@ -1,3 +1,4 @@
+import type { Matcher } from "react-day-picker";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { pl } from "date-fns/locale";
@@ -10,9 +11,10 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 interface DatePickerProps {
   value?: Date;
   onChange?: (date?: Date) => void;
+  disabled?: Matcher | Matcher[];
 }
 
-export function DatePicker({ value, onChange }: DatePickerProps) {
+export function DatePicker({ value, onChange, disabled }: DatePickerProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -25,7 +27,7 @@ export function DatePicker({ value, onChange }: DatePickerProps) {
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
-        <Calendar mode="single" selected={value} onSelect={onChange} initialFocus locale={pl} />
+        <Calendar mode="single" selected={value} onSelect={onChange} disabled={disabled} initialFocus locale={pl} />
       </PopoverContent>
     </Popover>
   );

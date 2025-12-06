@@ -1,11 +1,10 @@
 import { PersonalDataStep } from "../PersonalDataStep";
 import { BirthDataStep } from "../BirthDataStep";
 import { AddressStep } from "../AddressStep";
-import { LastPolishAddressStep } from "../LastPolishAddressStep";
 import { CorrespondenceAddressStep } from "../CorrespondenceAddressStep";
 import { BusinessAddressStep } from "../BusinessAddressStep";
 import { SummaryStep } from "../SummaryStep";
-import { User, Calendar, Home, MapPin, Mail, Building2, CheckSquare } from "lucide-react";
+import { User, Calendar, Home, Mail, Building2, CheckSquare } from "lucide-react";
 
 export const STEPS = [
   {
@@ -19,7 +18,7 @@ export const STEPS = [
   {
     id: 2,
     title: "Data urodzenia",
-    description: "Informacje o urodzeniu",
+    description: "Informacje o urodzeniu.",
     fields: ["birth.date", "birth.city"],
     component: BirthDataStep,
     icon: Calendar,
@@ -27,7 +26,7 @@ export const STEPS = [
   {
     id: 3,
     title: "Adres zamieszkania",
-    description: "Twój aktualny adres",
+    description: "Twój aktualny adres.",
     fields: [
       "residentialAddress.street",
       "residentialAddress.houseNumber",
@@ -40,23 +39,14 @@ export const STEPS = [
   },
   {
     id: 4,
-    title: "Ostatni adres w Polsce",
-    description: "Dla osób mieszkających za granicą",
-    fields: ["lastKnownAddress"],
-    component: LastPolishAddressStep,
-    icon: MapPin,
-    conditional: true,
-  },
-  {
-    id: 5,
     title: "Adres korespondencyjny",
-    description: "Gdzie wysłać korespondencję",
-    fields: ["correspondenceAddress.type"],
+    description: "Gdzie wysłać korespondencję.",
+    fields: ["correspondenceAddress"],
     component: CorrespondenceAddressStep,
     icon: Mail,
   },
   {
-    id: 6,
+    id: 5,
     title: "Adres działalności",
     description: "Adres prowadzenia działalności",
     fields: [
@@ -69,7 +59,7 @@ export const STEPS = [
     icon: Building2,
   },
   {
-    id: 7,
+    id: 6,
     title: "Podsumowanie",
     description: "Sprawdź wprowadzone dane",
     fields: [],

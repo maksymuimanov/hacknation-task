@@ -9,25 +9,24 @@ export const SummaryStep = () => {
   const data = watch();
 
   const formatDate = (date?: Date) => {
-    if (!date) return "—";
+    if (!date) return "-";
     return format(date, "d MMMM yyyy", { locale: pl });
   };
 
   const formatAddress = (address?: {
     street?: string;
-    houseNumber?: number;
-    apartmentNumber?: number;
+    houseNumber?: string;
+    apartmentNumber?: string;
     zipCode?: string;
     city?: string;
-    country?: string;
   }) => {
-    if (!address?.street) return "—";
+    if (!address?.street) return "-";
 
     const parts = [address.street, address.houseNumber, address.apartmentNumber ? `/${address.apartmentNumber}` : ""]
       .filter(Boolean)
       .join(" ");
 
-    return `${parts}, ${address.zipCode} ${address.city}${address.country && address.country !== "Polska" ? `, ${address.country}` : ""}`;
+    return `${parts}, ${address.zipCode} ${address.city}`;
   };
 
   const getDocumentTypeName = (type?: string) => {
@@ -36,7 +35,7 @@ export const SummaryStep = () => {
       PASSPORT: "Paszport",
       OTHER: "Inny",
     };
-    return type ? types[type] || type : "—";
+    return type ? types[type] || type : "-";
   };
 
   const getCorrespondenceTypeName = (type?: string) => {
@@ -45,7 +44,7 @@ export const SummaryStep = () => {
       POSTE_RESTANTE: "Poste restante",
       PO_BOX: "Skrytka pocztowa",
     };
-    return type ? types[type] || type : "—";
+    return type ? types[type] || type : "-";
   };
 
   const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
