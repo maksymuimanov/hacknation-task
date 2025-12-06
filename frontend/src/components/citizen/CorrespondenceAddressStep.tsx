@@ -7,7 +7,6 @@ import type { CitizenSchema } from "./validations/citizen-schema";
 export const CorrespondenceAddressStep = () => {
   const {
     register,
-    formState: { errors },
     control,
     watch,
   } = useFormContext<CitizenSchema>();
