@@ -1,5 +1,6 @@
 package io.team.backend.entity;
 
+import io.team.backend.entity.person.Person;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class AccidentInfoSession {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     @ManyToOne
-    private PersonSession personSession;
+    private Person person;
     @OneToOne
     private DocumentSession documentSession;
 

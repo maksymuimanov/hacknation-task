@@ -1,5 +1,7 @@
-package io.team.backend.entity;
+package io.team.backend.entity.person;
 
+import io.team.backend.entity.AccidentInfoSession;
+import io.team.backend.entity.common.Address;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -13,11 +15,24 @@ import java.util.UUID;
 @Getter @Setter
 @RequiredArgsConstructor
 @Entity
-@Table(name = "person_sessions")
-public class PersonSession {
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    private String pesel;
+    @OneToOne
+    private Identity identity;
+    private String name;
+    @ManyToOne
+    private Birth birth;
+    private String phoneNumber;
+    @ManyToOne
+    private Address residentialAddress;
+    @ManyToOne
+    private Address lastKnownAddress;
+    @ManyToOne
+    private CorrespondenceAddress correspondenceAddress;
     @OneToMany
     private List<AccidentInfoSession> accidentInfoSessions;
 
@@ -28,7 +43,7 @@ public class PersonSession {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        PersonSession that = (PersonSession) o;
+        Person that = (Person) o;
         return getId() != null && Objects.equals(getId(), that.getId());
     }
 
