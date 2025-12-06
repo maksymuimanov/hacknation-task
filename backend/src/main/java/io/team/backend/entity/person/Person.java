@@ -1,7 +1,7 @@
 package io.team.backend.entity.person;
 
-import io.team.backend.entity.AccidentInfoSession;
 import io.team.backend.entity.common.Address;
+import io.team.backend.entity.info.AccidentInfo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +34,7 @@ public class Person {
     @ManyToOne
     private CorrespondenceAddress correspondenceAddress;
     @OneToMany
-    private List<AccidentInfoSession> accidentInfoSessions;
+    private List<AccidentInfo> accidentInfos;
 
     @Override
     public final boolean equals(Object o) {

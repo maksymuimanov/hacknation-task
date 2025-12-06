@@ -5,7 +5,6 @@ import lombok.Data;
 
 @Data
 public class WitnessRequest {
-    private String firstName;
-    private String lastName;
+    private String name;
     private AddressRequest address;
 }
