@@ -20,6 +20,6 @@ public class PersonServiceImpl implements PersonService {
         PersonSession entity = new PersonSession();
         PersonSession savedSession = personSessionRepository.save(entity);
         System.out.println(savedSession.getId());
-        return personSessionMapper.toPersonSessionResponse(savedSession);
+        return personSessionMapper.toPersonResponse(savedSession);
     }
 }

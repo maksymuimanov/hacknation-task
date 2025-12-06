@@ -1,4 +1,4 @@
-package io.team.backend.dto.accident;
+package io.team.backend.dto.info;
 
 import io.team.backend.dto.common.AddressRequest;
 import jakarta.validation.constraints.NotNull;

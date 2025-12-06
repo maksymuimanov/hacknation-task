@@ -1,4 +1,4 @@
-package io.team.backend.dto.accident;
+package io.team.backend.dto.info;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

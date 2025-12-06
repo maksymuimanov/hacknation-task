@@ -20,13 +20,13 @@ public class AccidentPersonController {
 
     @PostMapping(value = "/injured")
     public ResponseEntity<PersonResponse> postInjured(@Valid @RequestBody InjuredPersonRequest personRequest) {
-        PersonResponse personSession = personService.createAccident(personRequest);
-        return ResponseEntity.ok(personSession);
+        PersonResponse person = personService.createAccident(personRequest);
+        return ResponseEntity.ok(person);
     }
 
     @PostMapping(value = "/proxy")
     public ResponseEntity<PersonResponse> postProxy(@Valid @RequestBody ProxyPersonRequest personRequest) {
-        PersonResponse personSession = personService.createAccident(personRequest);
-        return ResponseEntity.ok(personSession);
+        PersonResponse person = personService.createAccident(personRequest);
+        return ResponseEntity.ok(person);
     }
 }

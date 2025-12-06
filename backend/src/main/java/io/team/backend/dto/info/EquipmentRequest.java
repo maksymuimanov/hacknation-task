@@ -1,4 +1,4 @@
-package io.team.backend.dto.accident;
+package io.team.backend.dto.info;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package io.team.backend.dto.accident;
+package io.team.backend.dto.info;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.team.backend.dto.common.AddressRequest;

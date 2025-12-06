@@ -12,15 +12,13 @@ import java.util.UUID;
 @Getter @Setter
 @RequiredArgsConstructor
 @Entity
-@Table(name = "accident_sessions")
-public class AccidentInfoSession {
+@Table(name = "document_sessions")
+public class DocumentSession {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    @ManyToOne
-    private PersonSession personSession;
     @OneToOne
-    private DocumentSession documentSession;
+    private AccidentInfoSession accidentInfoSession;
 
     @Override
     public final boolean equals(Object o) {
@@ -29,7 +27,7 @@ public class AccidentInfoSession {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        AccidentInfoSession that = (AccidentInfoSession) o;
+        DocumentSession that = (DocumentSession) o;
         return getId() != null && Objects.equals(getId(), that.getId());
     }
 

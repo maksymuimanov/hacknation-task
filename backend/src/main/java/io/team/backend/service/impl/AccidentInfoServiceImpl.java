@@ -1,7 +1,7 @@
 package io.team.backend.service.impl;
 
-import io.team.backend.dto.accident.AccidentInfoRequest;
-import io.team.backend.dto.accident.AccidentInfoResponse;
+import io.team.backend.dto.info.AccidentInfoRequest;
+import io.team.backend.dto.info.AccidentInfoResponse;
 import io.team.backend.entity.AccidentInfoSession;
 import io.team.backend.entity.PersonSession;
 import io.team.backend.exception.PersonNotFoundException;
@@ -25,6 +25,6 @@ public class AccidentInfoServiceImpl implements AccidentInfoService {
         PersonSession personSession = personSessionRepository.findById(accidentInfoRequest.getUserId()).orElseThrow(PersonNotFoundException::new);
         accidentInfoSession.setPersonSession(personSession);
         AccidentInfoSession savedAccidentInfoSession = accidentInfoSessionRepository.save(accidentInfoSession);
-        return accidentInfoSessionMapper.toAccidentInfoSessionResponse(savedAccidentInfoSession);
+        return accidentInfoSessionMapper.toAccidentInfoResponse(savedAccidentInfoSession);
     }
 }
