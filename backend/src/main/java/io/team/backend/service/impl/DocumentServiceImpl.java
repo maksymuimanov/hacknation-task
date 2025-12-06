@@ -2,8 +2,8 @@ package io.team.backend.service.impl;
 
 import io.team.backend.dto.document.DocumentRequest;
 import io.team.backend.dto.document.DocumentResponse;
-import io.team.backend.entity.AccidentInfoSession;
 import io.team.backend.entity.DocumentSession;
+import io.team.backend.entity.info.AccidentInfo;
 import io.team.backend.exception.AccidentInfoNotFoundException;
 import io.team.backend.mapper.DocumentSessionMapper;
 import io.team.backend.repository.AccidentInfoSessionRepository;
@@ -22,8 +22,8 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     public DocumentResponse createDocument(DocumentRequest documentRequest) {
         DocumentSession documentSession = new DocumentSession();
-        AccidentInfoSession accidentInfoSession = accidentInfoSessionRepository.findById(documentRequest.getAccidentId()).orElseThrow(AccidentInfoNotFoundException::new);
-        documentSession.setAccidentInfoSession(accidentInfoSession);
+        AccidentInfo accidentInfo = accidentInfoSessionRepository.findById(documentRequest.getAccidentId()).orElseThrow(AccidentInfoNotFoundException::new);
+        documentSession.setAccidentInfo(accidentInfo);
         DocumentSession savedDocumentSession = documentSessionRepository.save(documentSession);
         return documentSessionMapper.toDocumentResponse(savedDocumentSession);
     }

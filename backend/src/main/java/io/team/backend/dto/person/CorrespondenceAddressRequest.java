@@ -1,6 +1,5 @@
 package io.team.backend.dto.person;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.team.backend.dto.common.AddressRequest;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -21,14 +20,12 @@ public class CorrespondenceAddressRequest extends AddressRequest {
 
     @EqualsAndHashCode(callSuper = true)
     @Data
-    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class PoBox extends PosteRestante {
         @NotBlank
         private String number;
     }
 
     @Data
-    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class PosteRestante {
         @NotBlank
         private String zipCode;

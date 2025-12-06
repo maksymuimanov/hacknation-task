@@ -1,11 +1,16 @@
-package io.team.backend.entity;
+package io.team.backend.entity.info;
 
+import io.team.backend.entity.DocumentSession;
+import io.team.backend.entity.common.Address;
+import io.team.backend.entity.person.Person;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -13,13 +18,36 @@ import java.util.UUID;
 @Getter @Setter
 @RequiredArgsConstructor
 @Entity
-@Table(name = "person_sessions")
-public class PersonSession {
+@Table(name = "accident_infos")
+public class AccidentInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    @OneToMany
-    private List<AccidentInfoSession> accidentInfoSessions;
+    @Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime dateTime;
+    @ManyToOne
+    private Address location;
+    @Temporal(TemporalType.TIME)
+    private LocalTime startTime;
+    @Temporal(TemporalType.TIME)
+    private LocalTime endTime;
+    @ElementCollection
+    private List<String> traumaTypes;
+    private String description;
+    private String causeDescription;
+    private String locationDescription;
+    @ManyToOne
+    private Help firstAid;
+    @ManyToOne
+    private Help investigation;
+    @ManyToOne
+    private Equipment equipment;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Witness> witnesses;
+    @ManyToOne
+    private Person person;
+    @OneToOne
+    private DocumentSession documentSession;
 
     @Override
     public final boolean equals(Object o) {
@@ -28,7 +56,7 @@ public class PersonSession {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        PersonSession that = (PersonSession) o;
+        AccidentInfo that = (AccidentInfo) o;
         return getId() != null && Objects.equals(getId(), that.getId());
     }
 

@@ -1,26 +1,40 @@
-package io.team.backend.entity;
+package io.team.backend.entity.person;
 
+import io.team.backend.entity.common.Address;
+import io.team.backend.entity.info.AccidentInfo;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 @Getter @Setter
 @RequiredArgsConstructor
 @Entity
-@Table(name = "accident_sessions")
-public class AccidentInfoSession {
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    @ManyToOne
-    private PersonSession personSession;
+    private String pesel;
     @OneToOne
-    private DocumentSession documentSession;
+    private Identity identity;
+    private String name;
+    @ManyToOne
+    private Birth birth;
+    private String phoneNumber;
+    @ManyToOne
+    private Address residentialAddress;
+    @ManyToOne
+    private Address lastKnownAddress;
+    @ManyToOne
+    private CorrespondenceAddress correspondenceAddress;
+    @OneToMany
+    private List<AccidentInfo> accidentInfos;
 
     @Override
     public final boolean equals(Object o) {
@@ -29,7 +43,7 @@ public class AccidentInfoSession {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        AccidentInfoSession that = (AccidentInfoSession) o;
+        Person that = (Person) o;
         return getId() != null && Objects.equals(getId(), that.getId());
     }
 

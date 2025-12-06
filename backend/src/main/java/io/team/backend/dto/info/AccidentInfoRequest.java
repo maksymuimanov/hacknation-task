@@ -1,6 +1,5 @@
 package io.team.backend.dto.info;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.team.backend.dto.common.AddressRequest;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -14,7 +13,6 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class AccidentInfoRequest {
     @NotNull
     private UUID userId;

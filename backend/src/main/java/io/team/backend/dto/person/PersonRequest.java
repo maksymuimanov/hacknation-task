@@ -1,13 +1,11 @@
 package io.team.backend.dto.person;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.team.backend.dto.common.AddressRequest;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class PersonRequest {
     @NotBlank
     private String pesel;
