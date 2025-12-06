@@ -44,7 +44,6 @@ export const PersonalDataStep = () => {
               <SelectContent>
                 <SelectItem value="ID_CARD">Dowód osobisty</SelectItem>
                 <SelectItem value="PASSPORT">Paszport</SelectItem>
-                <SelectItem value="OTHER">Inny</SelectItem>
               </SelectContent>
             </Select>
           )}
@@ -70,7 +69,7 @@ export const PersonalDataStep = () => {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="phoneNumber">Telefon</Label>
+        <Label htmlFor="phoneNumber">Telefon (opcjonalnie)</Label>
         <Input id="phoneNumber" type="tel" placeholder="+48 123 456 789" {...register("phoneNumber")} />
       </div>
     </div>

@@ -18,7 +18,16 @@ export const BirthDataStep = () => {
         <Controller
           control={control}
           name="birth.date"
-          render={({ field }) => <DatePicker value={field.value} onChange={field.onChange} />}
+          render={({ field }) => {
+            return <>
+
+              <DatePicker
+                value={field.value}
+                onChange={field.onChange}
+                disabled={{ after: new Date() }}
+              />
+            </>;
+          }}
         />
         {errors.birth?.date && <p className="text-xs text-destructive">{errors.birth.date.message}</p>}
       </div>
