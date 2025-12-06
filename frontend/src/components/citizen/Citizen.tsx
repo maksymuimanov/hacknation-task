@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useCitizenForm } from "./hooks/useCitizenForm";
 import { FormProvider } from "react-hook-form";
 import { STEPS } from "./constants/steps-config";
+import { PhaseStepper } from "./PhaseStepper";
 
 function Citizen() {
   const {
@@ -59,6 +60,7 @@ function Citizen() {
   return (
     <main className="flex min-h-[calc(100vh-64px)] flex-col items-center justify-center p-4 bg-muted/30">
       <div className="w-full max-w-xl space-y-4">
+        <PhaseStepper currentStep={currentStep} />
         <div className="space-y-3">
           <div className="flex justify-between text-sm text-muted-foreground">
             <span>
