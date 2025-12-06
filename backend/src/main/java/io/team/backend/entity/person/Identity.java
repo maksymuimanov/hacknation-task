@@ -19,4 +19,9 @@ public class Identity {
     private String type;
     private String series;
     private String number;
+
+    @Override
+    public String toString() {
+        return String.join(", ", type, series, number);
+    }
 }

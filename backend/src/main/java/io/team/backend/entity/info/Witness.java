@@ -1,10 +1,7 @@
 package io.team.backend.entity.info;
 
 import io.team.backend.entity.common.Address;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -15,8 +12,9 @@ import lombok.Setter;
 @Table(name = "witnesses")
 public class Witness {
     @Id
+    @GeneratedValue
     private Long id;
     private String name;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Address address;
 }
