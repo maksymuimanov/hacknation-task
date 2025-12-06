@@ -1,7 +1,7 @@
 package io.team.backend.entity.info;
 
-import io.team.backend.entity.DocumentSession;
 import io.team.backend.entity.common.Address;
+import io.team.backend.entity.document.Document;
 import io.team.backend.entity.person.Person;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -41,13 +41,13 @@ public class AccidentInfo {
     @ManyToOne
     private Help investigation;
     @ManyToOne
-    private Equipment equipment;
+    private EquipmentInfo equipmentInfo;
     @OneToMany(cascade = CascadeType.ALL)
     private List<Witness> witnesses;
     @ManyToOne
     private Person person;
     @OneToOne
-    private DocumentSession documentSession;
+    private Document document;
 
     @Override
     public final boolean equals(Object o) {
