@@ -8,11 +8,6 @@ interface AiAnalysisPanelProps {
   selectedCase: AccidentCase | null;
 }
 
-/**
- * AI Analysis Panel component.
- * Displays the 4 pillars analysis and recommendation.
- * Uses Gemini 2.5 Flash via OpenRouter for document analysis.
- */
 export function AiAnalysisPanel({ selectedCase }: AiAnalysisPanelProps) {
   const { analyzing, analysis, error, analyze, resetAnalysis } = useAiAnalysis();
 
@@ -24,9 +19,9 @@ export function AiAnalysisPanel({ selectedCase }: AiAnalysisPanelProps) {
 
   if (!selectedCase) {
     return (
-      <aside className="w-96 border-l border-sidebar-border bg-sidebar flex flex-col h-full">
-        <div className="p-4 border-b border-sidebar-border">
-          <h2 className="font-semibold text-sidebar-foreground flex items-center gap-2">
+      <aside className="w-96 border-l border-border bg-card flex flex-col h-full">
+        <div className="p-4 border-b border-border">
+          <h2 className="font-semibold text-foreground flex items-center gap-2 pt-3">
             <Sparkles className="h-4 w-4 text-primary" />
             Asystent AI
           </h2>
@@ -44,9 +39,9 @@ export function AiAnalysisPanel({ selectedCase }: AiAnalysisPanelProps) {
   }
 
   return (
-    <aside className="w-96 border-l border-sidebar-border bg-sidebar flex flex-col h-full overflow-hidden">
-      <div className="p-4 border-b border-sidebar-border">
-        <h2 className="font-semibold text-sidebar-foreground flex items-center gap-2">
+    <aside className="w-96 border-l border-border bg-card flex flex-col h-full overflow-hidden">
+      <div className="p-4 border-b border-border">
+        <h2 className="font-semibold text-foreground flex items-center gap-2">
           <Sparkles className="h-4 w-4 text-primary" />
           Asystent AI
         </h2>
@@ -58,7 +53,7 @@ export function AiAnalysisPanel({ selectedCase }: AiAnalysisPanelProps) {
       <div className="flex-1 overflow-auto p-4 space-y-4">
         {!analysis ? (
           <div className="space-y-4">
-            <Card className="border-dashed border-2 bg-transparent">
+            <Card className="border-dashed border-2 border-border bg-transparent">
               <CardContent className="p-4 text-center">
                 <p className="text-sm text-muted-foreground mb-4">
                   System przeanalizuje dokumentację i sprawdzi zgodność z 4 filarami wypadku przy pracy.
@@ -81,7 +76,7 @@ export function AiAnalysisPanel({ selectedCase }: AiAnalysisPanelProps) {
                   )}
                 </Button>
                 {error && (
-                  <div className="mt-3 p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
+                  <div className="mt-3 p-3 rounded-lg bg-destructive/10 text-destructive text-sm border border-destructive/20">
                     <p className="font-medium">Błąd:</p>
                     <p>{error}</p>
                   </div>
@@ -96,14 +91,14 @@ export function AiAnalysisPanel({ selectedCase }: AiAnalysisPanelProps) {
                 Weryfikacja 4 filarów
               </h3>
               {analysis.pillars.map((pillar, idx) => (
-                <Card key={idx} className="bg-card/50">
+                <Card key={idx} className="bg-background border-border">
                   <CardHeader className="p-3 pb-1">
                     <CardTitle className="text-sm font-medium flex items-center justify-between">
                       {pillar.name}
                       {pillar.status ? (
-                        <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                        <CheckCircle2 className="h-4 w-4 text-primary" />
                       ) : (
-                        <AlertCircle className="h-4 w-4 text-rose-500" />
+                        <AlertCircle className="h-4 w-4 text-destructive" />
                       )}
                     </CardTitle>
                   </CardHeader>
@@ -118,7 +113,7 @@ export function AiAnalysisPanel({ selectedCase }: AiAnalysisPanelProps) {
               <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Projekt opinii
               </h3>
-              <div className="p-3 rounded-lg bg-card/50 border text-sm leading-relaxed">
+              <div className="p-3 rounded-lg bg-background border border-border text-sm leading-relaxed">
                 {analysis.opinion}
               </div>
             </div>
@@ -128,9 +123,9 @@ export function AiAnalysisPanel({ selectedCase }: AiAnalysisPanelProps) {
                 Rekomendacja
               </h3>
               <div
-                className={`p-3 rounded-lg text-center font-semibold ${analysis.recommendation === "approve"
-                  ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20"
-                  : "bg-rose-500/10 text-rose-600 border border-rose-500/20"
+                className={`p-3 rounded-lg text-center font-semibold border ${analysis.recommendation === "approve"
+                  ? "bg-primary/10 text-primary border-primary/20"
+                  : "bg-destructive/10 text-destructive border-destructive/20"
                   }`}
               >
                 {analysis.recommendation === "approve"
@@ -142,7 +137,7 @@ export function AiAnalysisPanel({ selectedCase }: AiAnalysisPanelProps) {
             <Button
               variant="outline"
               onClick={resetAnalysis}
-              className="w-full"
+              className="w-full border-border mb-5"
             >
               Nowa analiza
             </Button>

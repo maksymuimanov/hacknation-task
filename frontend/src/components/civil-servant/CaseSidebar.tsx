@@ -11,11 +11,6 @@ interface CaseSidebarProps {
   onUploadFile: (file: File) => void;
 }
 
-/**
- * Sidebar component displaying list of accident cases.
- * Includes upload functionality for new PDF files.
- * Uses sidebar-* CSS variables from the design system.
- */
 export function CaseSidebar({
   cases,
   selectedCaseId,
@@ -29,7 +24,6 @@ export function CaseSidebar({
     if (file && file.type === "application/pdf") {
       onUploadFile(file);
     }
-    // Reset input so the same file can be uploaded again
     event.target.value = "";
   };
 
@@ -42,17 +36,16 @@ export function CaseSidebar({
       case "pending":
         return <Clock className="h-4 w-4 text-amber-500" />;
       case "approved":
-        return <CheckCircle className="h-4 w-4 text-emerald-500" />;
+        return <CheckCircle className="h-4 w-4 text-primary" />;
       case "rejected":
-        return <AlertCircle className="h-4 w-4 text-rose-500" />;
+        return <AlertCircle className="h-4 w-4 text-destructive" />;
     }
   };
 
   return (
-    <aside className="w-80 border-r border-sidebar-border bg-sidebar flex flex-col h-full">
-      {/* Header */}
-      <div className="p-4 border-b border-sidebar-border">
-        <h2 className="font-semibold text-lg text-sidebar-foreground tracking-tight">
+    <aside className="w-80 border-r border-border bg-card flex flex-col h-full">
+      <div className="p-4 border-b border-border">
+        <h2 className="font-semibold text-lg text-foreground tracking-tight">
           Zgłoszenia wypadków
         </h2>
         <p className="text-sm text-muted-foreground mt-0.5">
@@ -60,8 +53,7 @@ export function CaseSidebar({
         </p>
       </div>
 
-      {/* Upload Button */}
-      <div className="p-3 border-b border-sidebar-border">
+      <div className="p-3 border-b border-border">
         <input
           ref={fileInputRef}
           type="file"
@@ -72,23 +64,22 @@ export function CaseSidebar({
         <Button
           onClick={triggerUpload}
           variant="outline"
-          className="w-full justify-center gap-2 border-dashed border-2 hover:border-primary hover:bg-primary/5 transition-colors"
+          className="w-full justify-center gap-2 border-dashed border-2 border-border hover:border-primary hover:bg-primary/5 transition-colors"
         >
           <Upload className="h-4 w-4" />
           Wgraj nowy PDF
         </Button>
       </div>
 
-      {/* Cases List */}
       <ScrollArea className="flex-1">
         <div className="p-2 space-y-1">
           {cases.map((caseItem) => (
             <Button
               key={caseItem.id}
-              variant={selectedCaseId === caseItem.id ? "secondary" : "ghost"}
+              variant="ghost"
               className={`w-full justify-start h-auto py-3 px-3 ${selectedCaseId === caseItem.id
-                  ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                  : "hover:bg-sidebar-accent/50"
+                ? "bg-accent text-accent-foreground"
+                : "hover:bg-accent"
                 }`}
               onClick={() => onSelectCase(caseItem.id)}
             >

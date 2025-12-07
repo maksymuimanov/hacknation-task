@@ -14,7 +14,6 @@ function CivilServant() {
 
   return (
     <div className="flex h-[calc(100vh-64px)] overflow-hidden bg-background">
-      {/* Left Sidebar - Cases List */}
       <CaseSidebar
         cases={cases}
         selectedCaseId={selectedCaseId}
@@ -22,12 +21,10 @@ function CivilServant() {
         onUploadFile={addUploadedCase}
       />
 
-      {/* Main Content - PDF Viewer */}
       <main className="flex-1 flex flex-col">
         <PdfViewer selectedCase={selectedCase} />
       </main>
 
-      {/* Right Panel - AI Analysis */}
       <AiAnalysisPanel selectedCase={selectedCase} />
     </div>
   );
