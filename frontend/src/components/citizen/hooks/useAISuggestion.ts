@@ -3,15 +3,16 @@ import { OpenRouter } from "@openrouter/sdk";
 
 interface UseAISuggestionProps {
   context?: string;
+  customPrompt?: string;
 }
 
-export const useAISuggestion = ({ context }: UseAISuggestionProps = {}) => {
+export const useAISuggestion = ({ context, customPrompt }: UseAISuggestionProps = {}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [suggestion, setSuggestion] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
 
   const generateSuggestion = useCallback(async (currentText: string) => {
-    if (!currentText || currentText.trim().length < 10) {
+    if (!customPrompt && (!currentText || currentText.trim().length < 10)) {
       setError("Wpisz przynajmniej kilka słów, aby AI mogło pomóc");
       return;
     }
@@ -24,7 +25,9 @@ export const useAISuggestion = ({ context }: UseAISuggestionProps = {}) => {
         apiKey: import.meta.env.VITE_OPEN_ROUTER_API_KEY,
       });
 
-      const prompt = `Jesteś pomocnym asystentem wspierającym osoby zgłaszające wypadek przy pracy do ZUS. 
+      const prompt = customPrompt
+        ? currentText
+        : `Jesteś pomocnym asystentem wspierającym osoby zgłaszające wypadek przy pracy do ZUS. 
 
 Użytkownik zaczął opisywać wypadek: "${currentText}"
 
@@ -51,7 +54,7 @@ Nie powtarzaj tego co użytkownik już napisał. Bądź konkretny i pomocny.`;
     } finally {
       setIsLoading(false);
     }
-  }, [context]);
+  }, [context, customPrompt]);
 
   const clearSuggestion = useCallback(() => {
     setSuggestion("");
