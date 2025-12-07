@@ -40,7 +40,7 @@ public class PersonServiceImpl implements PersonService {
         InjuredPersonRequest injuredPersonRequest = personRequest.getInjuredPerson();
         InjuredPerson injuredPerson = personMapper.toInjuredPerson(injuredPersonRequest);
         InjuredPerson savedInjuredPerson = injuredPersonRepository.save(injuredPerson);
-        proxyPerson.getInjuredPersons().add(savedInjuredPerson);
+        proxyPerson.setInjuredPerson(savedInjuredPerson);
         ProxyPerson savedProxyPerson = proxyPersonRepository.save(proxyPerson);
         return personMapper.toPersonResponse(savedProxyPerson);
     }
