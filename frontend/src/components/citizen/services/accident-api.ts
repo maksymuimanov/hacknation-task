@@ -233,7 +233,7 @@ export const prepareAccidentInfoPayload = (data: CitizenSchema, userId: string):
 export const submitInjuredPerson = async (data: CitizenSchema): Promise<string> => {
   const payload = prepareInjuredPersonPayload(data);
 
-  const response = await fetch(`${API_BASE_URL}/persons/injured`, {
+  const response = await fetch(`${API_BASE_URL}/accidents/persons/injured`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -253,7 +253,7 @@ export const submitInjuredPerson = async (data: CitizenSchema): Promise<string> 
 export const submitAccidentInfo = async (data: CitizenSchema, userId: string): Promise<string> => {
   const payload = prepareAccidentInfoPayload(data, userId);
 
-  const response = await fetch(`${API_BASE_URL}/infos`, {
+  const response = await fetch(`${API_BASE_URL}/accidents/infos`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -276,7 +276,7 @@ export const generateAccidentPdf = async (userId: string, accidentInfoId: string
     accidentInfoId,
   };
 
-  const response = await fetch(`${API_BASE_URL}/pdf`, {
+  const response = await fetch(`${API_BASE_URL}/accidents/pdf`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
