@@ -1,14 +1,29 @@
 import { PersonalDataStep } from "../PersonalDataStep";
+import { ProxyDataStep } from "../ProxyDataStep";
 import { BirthDataStep } from "../BirthDataStep";
 import { AddressStep } from "../AddressStep";
 import { CorrespondenceAddressStep } from "../CorrespondenceAddressStep";
 import { BusinessAddressStep } from "../BusinessAddressStep";
 import { SummaryStep } from "../SummaryStep";
 import { AccidentBasicInfoStep } from "../AccidentBasicInfoStep";
+import { WitnessDataStep } from "../WitnessDataStep";
 import { AccidentInjuriesStep } from "../AccidentInjuriesStep";
 import { AccidentCircumstancesStep } from "../AccidentCircumstancesStep";
 import { DocumentUploadStep } from "../DocumentUploadStep";
-import { User, Calendar, Home, Mail, Building2, CheckSquare, AlertTriangle, Stethoscope, FileText, Upload } from "lucide-react";
+import {
+  User,
+  UserCheck,
+  Calendar,
+  Home,
+  Mail,
+  Building2,
+  CheckSquare,
+  AlertTriangle,
+  Eye,
+  Stethoscope,
+  FileText,
+  Upload,
+} from "lucide-react";
 
 export const STEPS = [
   {
@@ -21,6 +36,15 @@ export const STEPS = [
   },
   {
     id: 2,
+    title: "Dane pełnomocnika",
+    description: "Dane osoby zgłaszającej wypadek",
+    fields: ["proxy.name"],
+    component: ProxyDataStep,
+    icon: UserCheck,
+    conditional: "isProxy" as const,
+  },
+  {
+    id: 3,
     title: "Data urodzenia",
     description: "Informacje o urodzeniu.",
     fields: ["birth.date", "birth.city"],
@@ -28,7 +52,7 @@ export const STEPS = [
     icon: Calendar,
   },
   {
-    id: 3,
+    id: 4,
     title: "Adres zamieszkania",
     description: "Twój aktualny adres.",
     fields: [
@@ -42,7 +66,7 @@ export const STEPS = [
     icon: Home,
   },
   {
-    id: 4,
+    id: 5,
     title: "Adres korespondencyjny",
     description: "Gdzie wysłać korespondencję.",
     fields: ["correspondenceAddress"],
@@ -50,7 +74,7 @@ export const STEPS = [
     icon: Mail,
   },
   {
-    id: 5,
+    id: 6,
     title: "Adres działalności",
     description: "Adres prowadzenia działalności",
     fields: [
@@ -63,7 +87,7 @@ export const STEPS = [
     icon: Building2,
   },
   {
-    id: 6,
+    id: 7,
     title: "Podstawowe informacje",
     description: "Data, godzina i miejsce wypadku",
     fields: ["accident.date", "accident.time", "accident.location"],
@@ -71,7 +95,16 @@ export const STEPS = [
     icon: AlertTriangle,
   },
   {
-    id: 7,
+    id: 8,
+    title: "Dane świadka",
+    description: "Dane świadka i jego zeznanie",
+    fields: ["witness.name", "witness.testimony"],
+    component: WitnessDataStep,
+    icon: Eye,
+    conditional: "hasWitness" as const,
+  },
+  {
+    id: 9,
     title: "Urazy i pomoc medyczna",
     description: "Rodzaj urazów i pierwsza pomoc",
     fields: ["accident.injuries", "accident.medicalAidProvided"],
@@ -79,7 +112,7 @@ export const STEPS = [
     icon: Stethoscope,
   },
   {
-    id: 8,
+    id: 10,
     title: "Opis okoliczności",
     description: "Szczegółowy przebieg wypadku",
     fields: ["accident.detailedDescription", "accident.activitiesBeforeAccident"],
@@ -87,7 +120,7 @@ export const STEPS = [
     icon: FileText,
   },
   {
-    id: 9,
+    id: 11,
     title: "Załączniki",
     description: "Dokumenty potwierdzające",
     fields: ["documents"],
@@ -95,7 +128,7 @@ export const STEPS = [
     icon: Upload,
   },
   {
-    id: 10,
+    id: 12,
     title: "Podsumowanie",
     description: "Sprawdź wprowadzone dane",
     fields: [],

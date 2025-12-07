@@ -3,6 +3,7 @@ import { useFormContext, Controller } from "react-hook-form";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { Checkbox } from "../ui/checkbox";
 import type { CitizenSchema } from "./validations/citizen-schema";
 
 export const PersonalDataStep = () => {
@@ -10,9 +11,12 @@ export const PersonalDataStep = () => {
     register,
     formState: { errors },
     control,
+    watch,
+    setValue,
   } = useFormContext<CitizenSchema>();
 
   const [nip, setNip] = useState<string>("");
+  const isProxy = watch("isProxy");
 
   const mockupNip = {
     nip: "573-000-00-00",
@@ -95,6 +99,22 @@ export const PersonalDataStep = () => {
       <div className="space-y-2">
         <Label htmlFor="phoneNumber">Telefon (opcjonalnie)</Label>
         <Input id="phoneNumber" type="tel" placeholder="+48 123 456 789" {...register("phoneNumber")} />
+      </div>
+
+      <div className="flex items-start space-x-3 pt-4 border-t border-border/50">
+        <Checkbox
+          id="isProxy"
+          checked={isProxy}
+          onCheckedChange={(checked) => setValue("isProxy", checked === true)}
+        />
+        <div className="space-y-1">
+          <Label htmlFor="isProxy" className="font-medium cursor-pointer">
+            Jestem pełnomocnikiem poszkodowanego
+          </Label>
+          <p className="text-xs text-muted-foreground">
+            Zaznacz, jeśli zgłaszasz wypadek w imieniu osoby poszkodowanej
+          </p>
+        </div>
       </div>
     </div>
   );
