@@ -16,6 +16,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
 
@@ -35,7 +36,11 @@ public class DocumentServiceImpl implements DocumentService {
             MultipartFile file = additionalDocument.getFile();
             ClassPathResource classPathResource = new ClassPathResource(ACCIDENTS_ADDITIONAL_PATH + file.getOriginalFilename() + "_" + UUID.randomUUID() + file.getContentType());
             String path = classPathResource.getPath();
-            file.transferTo(Path.of(path));
+            Path destination = Path.of(path);
+            if (!Files.exists(destination)) {
+                Files.createFile(destination);
+            }
+            file.transferTo(destination);
             additionalDocument.setPath(path);
         }
         AccidentInfo accidentInfo = accidentInfoRepository.findById(documentRequest.getAccidentId()).orElseThrow(AccidentInfoNotFoundException::new);
