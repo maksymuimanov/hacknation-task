@@ -3,16 +3,22 @@ import { useForm, type SubmitHandler, type FieldPath } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { citizenSchema, type CitizenSchema } from "../validations/citizen-schema";
 import { STEPS } from "../constants/steps-config";
+import {
+  submitInjuredPerson,
+  submitAccidentInfo,
+  generateAccidentPdf,
+  downloadPdf,
+} from "../services/accident-api";
 
-const API_URL = "https://hacknation-task-backend-latest.onrender.com/api/v1.0/accidents/persons/injured";
-
-type ApiPayload = Omit<CitizenSchema, "livesAbroad">;
+export type SubmissionPhase = "person" | "accident" | "pdf" | null;
 
 export const useCitizenForm = () => {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [submissionPhase, setSubmissionPhase] = useState<SubmissionPhase>(null);
+  const [pdfBlob, setPdfBlob] = useState<Blob | null>(null);
 
   const totalSteps = STEPS.length;
   const progress = (currentStep / totalSteps) * 100;
@@ -34,6 +40,7 @@ export const useCitizenForm = () => {
       },
       phoneNumber: "",
       residentialAddress: {
+        country: "Polska",
         street: "",
         city: "",
         houseNumber: "",
@@ -41,6 +48,7 @@ export const useCitizenForm = () => {
         zipCode: "",
       },
       correspondenceAddress: {
+        country: "Polska",
         street: "",
         city: "",
         houseNumber: "",
@@ -58,6 +66,7 @@ export const useCitizenForm = () => {
         },
       },
       businessAddress: {
+        country: "Polska",
         street: "",
         city: "",
         houseNumber: "",
@@ -68,48 +77,54 @@ export const useCitizenForm = () => {
     },
   });
 
-  const prepareApiPayload = (data: CitizenSchema): ApiPayload => {
-    const { livesAbroad, ...rest } = data;
-
-    const payload: ApiPayload = {
-      ...rest,
-      birth: {
-        ...rest.birth,
-        date: rest.birth.date,
-      },
-    };
-
-    return payload;
-  };
-
-  const submitToApi = async (payload: ApiPayload): Promise<void> => {
-    const response = await fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => null);
-      throw new Error(errorData?.message || `Błąd serwera: ${response.status}`);
+  const getPhaseMessage = (phase: SubmissionPhase): string => {
+    switch (phase) {
+      case "person":
+        return "Wysyłanie danych osobowych...";
+      case "accident":
+        return "Wysyłanie informacji o wypadku...";
+      case "pdf":
+        return "Generowanie dokumentu PDF...";
+      default:
+        return "Wysyłanie...";
     }
   };
 
   const onSubmit: SubmitHandler<CitizenSchema> = async (data) => {
     setIsSubmitting(true);
     setSubmitError(null);
+    setPdfBlob(null);
 
     try {
-      const payload = prepareApiPayload(data);
-      await submitToApi(payload);
+      // Step 1: Submit injured person data
+      setSubmissionPhase("person");
+      const userId = await submitInjuredPerson(data);
+
+      // Step 2: Submit accident info
+      setSubmissionPhase("accident");
+      const accidentInfoId = await submitAccidentInfo(data, userId);
+
+      // Step 3: Generate PDF
+      setSubmissionPhase("pdf");
+      const pdf = await generateAccidentPdf(userId, accidentInfoId);
+      setPdfBlob(pdf);
+
+      // Auto-download the PDF
+      downloadPdf(pdf);
+
       setSubmitSuccess(true);
     } catch (error) {
       const message = error instanceof Error ? error.message : "Wystąpił nieoczekiwany błąd. Spróbuj ponownie.";
       setSubmitError(message);
     } finally {
       setIsSubmitting(false);
+      setSubmissionPhase(null);
+    }
+  };
+
+  const redownloadPdf = () => {
+    if (pdfBlob) {
+      downloadPdf(pdfBlob);
     }
   };
 
@@ -166,6 +181,8 @@ export const useCitizenForm = () => {
     setCurrentStep(1);
     setSubmitError(null);
     setSubmitSuccess(false);
+    setSubmissionPhase(null);
+    setPdfBlob(null);
   };
 
   return {
@@ -175,10 +192,14 @@ export const useCitizenForm = () => {
     isSubmitting,
     submitError,
     submitSuccess,
+    submissionPhase,
+    pdfBlob,
     form,
     currentStepData,
     nextStep,
     prevStep,
     resetForm,
+    redownloadPdf,
+    getPhaseMessage,
   };
 };
