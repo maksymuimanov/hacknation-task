@@ -20,4 +20,9 @@ public class Address {
     private Integer houseNumber;
     private Integer apartmentNumber;
     private String zipCode;
+
+    @Override
+    public String toString() {
+        return String.join(", ", country, city, street, zipCode, houseNumber.toString() + "/" + apartmentNumber.toString());
+    }
 }

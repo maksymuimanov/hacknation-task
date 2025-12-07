@@ -1,9 +1,13 @@
 package io.team.backend.service.impl;
 
 import io.team.backend.dto.pdf.AccidentPdfRequest;
+import io.team.backend.entity.common.Address;
 import io.team.backend.entity.document.Document;
 import io.team.backend.entity.info.AccidentInfo;
+import io.team.backend.entity.info.EquipmentInfo;
+import io.team.backend.entity.info.Help;
 import io.team.backend.entity.person.Birth;
+import io.team.backend.entity.person.CorrespondenceAddress;
 import io.team.backend.entity.person.InjuredPerson;
 import io.team.backend.exception.AccidentInfoNotFoundException;
 import io.team.backend.exception.DocumentNotFoundException;
@@ -23,8 +27,13 @@ import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -37,7 +46,9 @@ public class AccidentPdfBuilderImpl implements AccidentPdfBuilder {
 
     @SneakyThrows
     @Override
-    public void buildPdf(AccidentPdfRequest accidentPdfRequest) {
+    public byte[] buildPdf(AccidentPdfRequest accidentPdfRequest) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
         File file = new ClassPathResource(ACCIDENT_PDF_TEMPLATE_PATH).getFile();
         PDDocument pdf = Loader.loadPDF(file);
 
@@ -57,12 +68,98 @@ public class AccidentPdfBuilderImpl implements AccidentPdfBuilder {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyy");
         String birthDate = birth.getDate().format(formatter);
         this.put(pdf, 0, 249, 413, this.spacesBetween(birthDate));
+        this.put(pdf, 0, 249, 377, this.getSafeString(birth.getCity()));
+        this.put(pdf, 0, 249, 347, this.getSafeString(person.getPhoneNumber()));
 
-        File outDir = file.getParentFile();
-        String outName = "accident_filled_" + person.getId() + ".pdf";
-        File out = new File(outDir, outName);
-        pdf.save(out);
+        Address residentialAddress = person.getResidentialAddress();
+        this.putMulti(pdf, 0, 249, 280, List.of(residentialAddress.getStreet(), residentialAddress.getHouseNumber().toString(), residentialAddress.getZipCode(), residentialAddress.getCountry()));
+        this.putMulti(pdf, 0, 400, 253, List.of(residentialAddress.getApartmentNumber().toString(), residentialAddress.getCity()));
+
+        Address lastKnownAddress = person.getLastKnownAddress();
+        if (lastKnownAddress != null) {
+            this.putMulti(pdf, 0, 249, 120, List.of(lastKnownAddress.getStreet(), lastKnownAddress.getHouseNumber().toString(), lastKnownAddress.getZipCode()));
+            this.putMulti(pdf, 0, 400, 93, List.of(lastKnownAddress.getApartmentNumber().toString(), lastKnownAddress.getCity()));
+        }
+
+        CorrespondenceAddress correspondenceAddress = person.getCorrespondenceAddress();
+        if (correspondenceAddress != null) {
+            CorrespondenceAddress.Type type = correspondenceAddress.getType();
+            switch (type) {
+                case ADDRESS -> {
+                    this.put(pdf, 1, 46, 702, "X");
+                    this.putMulti(pdf, 1, 249, 627, List.of(correspondenceAddress.getStreet(), correspondenceAddress.getHouseNumber().toString(), correspondenceAddress.getZipCode(), correspondenceAddress.getCountry()));
+                    this.putMulti(pdf, 1, 400, 600, List.of(correspondenceAddress.getApartmentNumber().toString(), correspondenceAddress.getCity()));
+                }
+                case POSTE_RESTANTE -> {
+                    CorrespondenceAddress.PosteRestante posteRestante = correspondenceAddress.getPosteRestante();
+                    this.put(pdf, 1, 136, 702, "X");
+                    this.put(pdf, 1, 249, 573, this.getSafeString(posteRestante.getZipCode()));
+                    this.put(pdf, 1, 400, 573, this.getSafeString(posteRestante.getPostOfficeName()));
+                }
+                case PO_BOX -> {
+                    CorrespondenceAddress.PoBox poBox = correspondenceAddress.getPoBox();
+                    this.put(pdf, 1, 262, 702, "X");
+                    this.put(pdf, 1, 249, 600, this.getSafeString(poBox.getZipCode()));
+                    this.put(pdf, 1, 249, 573, this.getSafeString(poBox.getZipCode()));
+                    this.put(pdf, 1, 400, 573, this.getSafeString(poBox.getPostOfficeName()));
+                }
+            }
+        }
+
+        LocalDateTime dateTime = accidentInfo.getDateTime();
+        LocalDate localDate = dateTime.toLocalDate();
+        LocalTime localTime = dateTime.toLocalTime();
+        this.put(pdf, 2, 149, 120, this.spacesBetween(localDate.format(formatter)));
+        this.put(pdf, 2, 409, 120, this.getSafeString(localTime.format(DateTimeFormatter.ofPattern("HH:mm"))));
+        this.put(pdf, 2, 159, 90, this.getSafeString(accidentInfo.getLocation()));
+        this.put(pdf, 2, 229, 60, this.getSafeString(accidentInfo.getStartTime().format(DateTimeFormatter.ofPattern("HH:mm"))));
+        this.put(pdf, 2, 469, 60, this.getSafeString(accidentInfo.getEndTime().format(DateTimeFormatter.ofPattern("HH:mm"))));
+
+        this.put(pdf, 3, 189, 700, String.join(", ", accidentInfo.getTraumaTypes()));
+        this.put(pdf, 3, 70, 600, String.join(", ", accidentInfo.getDescription()));
+        Help firstAid = accidentInfo.getFirstAid();
+        if (firstAid.getProvided()) {
+            this.put(pdf, 3, 279, 410, "X");
+            this.put(pdf, 3, 70, 383, firstAid.getName());
+        } else {
+            this.put(pdf, 3, 352, 410, "X");
+        }
+
+        Help investigation = accidentInfo.getInvestigation();
+        if (investigation.getProvided()) {
+            this.put(pdf, 3, 70, 333, investigation.getName());
+        }
+
+        EquipmentInfo equipmentInfo = accidentInfo.getEquipmentInfo();
+        if (equipmentInfo.getUsed()) {
+            this.put(pdf, 3, 329, 225, "X");
+            this.put(pdf, 3, 70, 194, String.join(", ", equipmentInfo.getCondition(), equipmentInfo.getUseDescription(), equipmentInfo.getUsedAccordingInstructions().toString()));
+            if (equipmentInfo.getHasCertificate()) {
+                this.put(pdf, 3, 357, 110, "X");
+            } else {
+                this.put(pdf, 3, 435, 110, "X");
+            }
+            if (equipmentInfo.getRegisteredInFixedAssets()) {
+                this.put(pdf, 3, 386, 85, "X");
+            } else {
+                this.put(pdf, 3, 464, 85, "X");
+            }
+        } else {
+            this.put(pdf, 3, 397, 225, "X");
+        }
+
+        pdf.save(byteArrayOutputStream);
         pdf.close();
+
+        return byteArrayOutputStream.toByteArray();
+    }
+
+    private void putMulti(PDDocument doc, int page, float x, float y, List<String> strings) throws Exception {
+        float currentY = y;
+        for (String string : strings) {
+            this.put(doc, page, x, currentY, string);
+            currentY -= 27;
+        }
     }
 
     private void put(PDDocument doc, int page, float x, float y, String text) throws Exception {
@@ -82,6 +179,10 @@ public class AccidentPdfBuilderImpl implements AccidentPdfBuilder {
     }
 
     private String getSafeString(Object object) {
-        return object == null ? "" : object.toString();
+        try {
+            return object == null ? "" : object.toString();
+        } catch (Exception e) {
+            return "";
+        }
     }
 }

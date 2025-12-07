@@ -31,7 +31,7 @@ public class AccidentInfo {
     private LocalTime startTime;
     @Temporal(TemporalType.TIME)
     private LocalTime endTime;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> traumaTypes;
     private String description;
     private String causeDescription;
