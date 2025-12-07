@@ -1,5 +1,5 @@
 import io.team.backend.BackendApplication;
-import io.team.backend.dto.pdf.AccidentPdfRequest;
+import io.team.backend.dto.pdf.AccidentFileRequest;
 import io.team.backend.entity.common.Address;
 import io.team.backend.entity.document.Document;
 import io.team.backend.entity.info.AccidentInfo;
@@ -11,8 +11,8 @@ import io.team.backend.entity.person.InjuredPerson;
 import io.team.backend.repository.AccidentInfoRepository;
 import io.team.backend.repository.DocumentRepository;
 import io.team.backend.repository.InjuredPersonRepository;
-import io.team.backend.service.AccidentPdfBuilder;
-import io.team.backend.service.impl.AccidentPdfBuilderImpl;
+import io.team.backend.service.AccidentFileBuilder;
+import io.team.backend.service.impl.AccidentFileBuilderImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ class PdfBuildingTests {
     @Autowired
     private DocumentRepository documentRepository;
     @Autowired
-    private AccidentPdfBuilder accidentPdfBuilder;
+    private AccidentFileBuilder accidentFileBuilder;
 
 
     @Test
@@ -114,7 +114,7 @@ class PdfBuildingTests {
         documentRepository.save(document);
 
         // build PDF
-        accidentPdfBuilder.buildPdf(new AccidentPdfRequest(
+        accidentFileBuilder.buildDocxBytes(new AccidentFileRequest(
                 injuredPerson.getId(),
                 accidentInfo.getId(),
                 document.getId()
@@ -122,7 +122,7 @@ class PdfBuildingTests {
 
         // verify file generated next to template
         try {
-            File template = new org.springframework.core.io.ClassPathResource(AccidentPdfBuilderImpl.ACCIDENT_PDF_TEMPLATE_PATH).getFile();
+            File template = new org.springframework.core.io.ClassPathResource(AccidentFileBuilderImpl.ACCIDENT_PDF_TEMPLATE_PATH).getFile();
             File out = new File(template.getParentFile(), "accident_filled_" + injuredPerson.getId() + ".pdf");
             Assertions.assertTrue(out.exists(), "Generated PDF file should exist: " + out.getAbsolutePath());
         } catch (Exception e) {

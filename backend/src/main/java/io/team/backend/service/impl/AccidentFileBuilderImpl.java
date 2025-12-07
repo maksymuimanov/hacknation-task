@@ -1,8 +1,7 @@
 package io.team.backend.service.impl;
 
-import io.team.backend.dto.pdf.AccidentPdfRequest;
+import io.team.backend.dto.pdf.AccidentFileRequest;
 import io.team.backend.entity.common.Address;
-import io.team.backend.entity.document.Document;
 import io.team.backend.entity.info.AccidentInfo;
 import io.team.backend.entity.info.EquipmentInfo;
 import io.team.backend.entity.info.Help;
@@ -10,13 +9,10 @@ import io.team.backend.entity.person.Birth;
 import io.team.backend.entity.person.CorrespondenceAddress;
 import io.team.backend.entity.person.InjuredPerson;
 import io.team.backend.exception.AccidentInfoNotFoundException;
-import io.team.backend.exception.DocumentNotFoundException;
 import io.team.backend.exception.PersonNotFoundException;
 import io.team.backend.repository.AccidentInfoRepository;
-import io.team.backend.repository.DocumentRepository;
 import io.team.backend.repository.InjuredPersonRepository;
-import io.team.backend.repository.ProxyPersonRepository;
-import io.team.backend.service.AccidentPdfBuilder;
+import io.team.backend.service.AccidentFileBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.pdfbox.Loader;
@@ -24,6 +20,8 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
+import org.apache.pdfbox.text.PDFTextStripper;
+import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -37,24 +35,24 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AccidentPdfBuilderImpl implements AccidentPdfBuilder {
+public class AccidentFileBuilderImpl implements AccidentFileBuilder {
     public static final String ACCIDENT_PDF_TEMPLATE_PATH = "template/accident_template.pdf";
     private final InjuredPersonRepository injuredPersonRepository;
-    private final ProxyPersonRepository proxyPersonRepository;
+//    private final ProxyPersonRepository proxyPersonRepository;
     private final AccidentInfoRepository accidentInfoRepository;
-    private final DocumentRepository documentRepository;
+//    private final DocumentRepository documentRepository;
 
     @SneakyThrows
     @Override
-    public byte[] buildPdf(AccidentPdfRequest accidentPdfRequest) {
+    public byte[] buildPdfBytes(AccidentFileRequest accidentFileRequest) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
         File file = new ClassPathResource(ACCIDENT_PDF_TEMPLATE_PATH).getFile();
         PDDocument pdf = Loader.loadPDF(file);
 
-        InjuredPerson person = injuredPersonRepository.findById(accidentPdfRequest.getUserId()).orElseThrow(PersonNotFoundException::new);
-        AccidentInfo accidentInfo = accidentInfoRepository.findById(accidentPdfRequest.getAccidentInfoId()).orElseThrow(AccidentInfoNotFoundException::new);
-        Document document = documentRepository.findById(accidentPdfRequest.getDocumentId()).orElseThrow(DocumentNotFoundException::new);
+        InjuredPerson person = injuredPersonRepository.findById(accidentFileRequest.getUserId()).orElseThrow(PersonNotFoundException::new);
+        AccidentInfo accidentInfo = accidentInfoRepository.findById(accidentFileRequest.getAccidentInfoId()).orElseThrow(AccidentInfoNotFoundException::new);
+//        Document document = documentRepository.findById(accidentPdfRequest.getDocumentId()).orElseThrow(DocumentNotFoundException::new);
 
         String[] nameParts = person.getName().split(" ");
         String firstName = nameParts[0];
@@ -72,13 +70,13 @@ public class AccidentPdfBuilderImpl implements AccidentPdfBuilder {
         this.put(pdf, 0, 249, 347, this.getSafeString(person.getPhoneNumber()));
 
         Address residentialAddress = person.getResidentialAddress();
-        this.putMulti(pdf, 0, 249, 280, List.of(residentialAddress.getStreet(), residentialAddress.getHouseNumber().toString(), residentialAddress.getZipCode(), residentialAddress.getCountry()));
-        this.putMulti(pdf, 0, 400, 253, List.of(residentialAddress.getApartmentNumber().toString(), residentialAddress.getCity()));
+        this.putMulti(pdf, 0, 249, 280, List.of(this.getSafeString(residentialAddress.getStreet()), this.getSafeString(residentialAddress.getHouseNumber()), this.getSafeString(residentialAddress.getZipCode()), this.getSafeString(residentialAddress.getCountry())));
+        this.putMulti(pdf, 0, 400, 253, List.of(this.getSafeString(residentialAddress.getApartmentNumber()), this.getSafeString(residentialAddress.getCity())));
 
         Address lastKnownAddress = person.getLastKnownAddress();
         if (lastKnownAddress != null) {
-            this.putMulti(pdf, 0, 249, 120, List.of(lastKnownAddress.getStreet(), lastKnownAddress.getHouseNumber().toString(), lastKnownAddress.getZipCode()));
-            this.putMulti(pdf, 0, 400, 93, List.of(lastKnownAddress.getApartmentNumber().toString(), lastKnownAddress.getCity()));
+            this.putMulti(pdf, 0, 249, 120, List.of(this.getSafeString(lastKnownAddress.getStreet()), this.getSafeString(lastKnownAddress.getHouseNumber()), this.getSafeString(lastKnownAddress.getZipCode())));
+            this.putMulti(pdf, 0, 400, 93, List.of(this.getSafeString(lastKnownAddress.getApartmentNumber()), this.getSafeString(lastKnownAddress.getCity())));
         }
 
         CorrespondenceAddress correspondenceAddress = person.getCorrespondenceAddress();
@@ -87,8 +85,8 @@ public class AccidentPdfBuilderImpl implements AccidentPdfBuilder {
             switch (type) {
                 case ADDRESS -> {
                     this.put(pdf, 1, 46, 702, "X");
-                    this.putMulti(pdf, 1, 249, 627, List.of(correspondenceAddress.getStreet(), correspondenceAddress.getHouseNumber().toString(), correspondenceAddress.getZipCode(), correspondenceAddress.getCountry()));
-                    this.putMulti(pdf, 1, 400, 600, List.of(correspondenceAddress.getApartmentNumber().toString(), correspondenceAddress.getCity()));
+                    this.putMulti(pdf, 1, 249, 627, List.of(this.getSafeString(correspondenceAddress.getStreet()), this.getSafeString(correspondenceAddress.getHouseNumber()), this.getSafeString(correspondenceAddress.getZipCode()), this.getSafeString(correspondenceAddress.getCountry())));
+                    this.putMulti(pdf, 1, 400, 600, List.of(this.getSafeString(correspondenceAddress.getApartmentNumber()), this.getSafeString(correspondenceAddress.getCity())));
                 }
                 case POSTE_RESTANTE -> {
                     CorrespondenceAddress.PosteRestante posteRestante = correspondenceAddress.getPosteRestante();
@@ -118,7 +116,7 @@ public class AccidentPdfBuilderImpl implements AccidentPdfBuilder {
         this.put(pdf, 3, 189, 700, String.join(", ", accidentInfo.getTraumaTypes()));
         this.put(pdf, 3, 70, 600, String.join(", ", accidentInfo.getDescription()));
         Help firstAid = accidentInfo.getFirstAid();
-        if (firstAid.getProvided()) {
+        if (firstAid != null && firstAid.getProvided()) {
             this.put(pdf, 3, 279, 410, "X");
             this.put(pdf, 3, 70, 383, firstAid.getName());
         } else {
@@ -126,12 +124,12 @@ public class AccidentPdfBuilderImpl implements AccidentPdfBuilder {
         }
 
         Help investigation = accidentInfo.getInvestigation();
-        if (investigation.getProvided()) {
+        if (investigation != null && investigation.getProvided()) {
             this.put(pdf, 3, 70, 333, investigation.getName());
         }
 
         EquipmentInfo equipmentInfo = accidentInfo.getEquipmentInfo();
-        if (equipmentInfo.getUsed()) {
+        if (equipmentInfo != null && equipmentInfo.getUsed()) {
             this.put(pdf, 3, 329, 225, "X");
             this.put(pdf, 3, 70, 194, String.join(", ", equipmentInfo.getCondition(), equipmentInfo.getUseDescription(), equipmentInfo.getUsedAccordingInstructions().toString()));
             if (equipmentInfo.getHasCertificate()) {
@@ -151,6 +149,21 @@ public class AccidentPdfBuilderImpl implements AccidentPdfBuilder {
         pdf.save(byteArrayOutputStream);
         pdf.close();
 
+        return byteArrayOutputStream.toByteArray();
+    }
+
+    @SneakyThrows
+    @Override
+    public byte[] buildDocxBytes(AccidentFileRequest accidentFileRequest) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        byte[] pdfBytes = this.buildPdfBytes(accidentFileRequest);
+        PDDocument pdf = Loader.loadPDF(pdfBytes);
+        PDFTextStripper stripper = new PDFTextStripper();
+        String text = stripper.getText(pdf);
+        pdf.close();
+        WordprocessingMLPackage word = WordprocessingMLPackage.createPackage();
+        word.getMainDocumentPart().addParagraphOfText(text);
+        word.save(byteArrayOutputStream);
         return byteArrayOutputStream.toByteArray();
     }
 
