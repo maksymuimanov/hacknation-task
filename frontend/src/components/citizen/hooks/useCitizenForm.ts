@@ -75,6 +75,36 @@ export const useCitizenForm = () => {
         zipCode: "",
       },
       livesAbroad: false,
+      isProxy: false,
+      proxy: {
+        pesel: "",
+        identityType: "",
+        identitySeries: "",
+        identityNumber: "",
+        name: "",
+        phoneNumber: "",
+        address: {
+          country: "Polska",
+          street: "",
+          city: "",
+          houseNumber: "",
+          apartmentNumber: "",
+          zipCode: "",
+        },
+      },
+      hasWitness: false,
+      witness: {
+        name: "",
+        address: {
+          country: "Polska",
+          street: "",
+          city: "",
+          houseNumber: "",
+          apartmentNumber: "",
+          zipCode: "",
+        },
+        testimony: "",
+      },
     },
   });
 
@@ -97,22 +127,18 @@ export const useCitizenForm = () => {
     setPdfBlob(null);
 
     try {
-      // Step 1: Submit injured person data
       setSubmissionPhase("person");
       const userId = await submitInjuredPerson(data);
 
-      // Step 2: Submit accident info
       setSubmissionPhase("accident");
       const accidentInfoId = await submitAccidentInfo(data, userId);
 
-      // Step 3: Generate the file
       setSubmissionPhase("pdf");
       const pdfFile = await generateAccidentFile(userId, accidentInfoId, "pdf");
       const docxFile = await generateAccidentFile(userId, accidentInfoId, "docx");
       setPdfBlob(pdfFile);
       setDocxBlob(docxFile);
 
-      // Auto-download the files
       downloadFile(pdfFile, "zgloszenie-wypadku.pdf");
       downloadFile(docxFile, "zgloszenie-wypadku.docx");
 
@@ -142,6 +168,14 @@ export const useCitizenForm = () => {
     const step = STEPS[stepIndex];
     if (!step) return false;
 
+    // Check if step has a conditional field
+    if ("conditional" in step && step.conditional) {
+      const conditionalField = step.conditional;
+      const fieldValue = form.watch(conditionalField as any);
+      // Skip this step if the conditional checkbox is NOT checked
+      return !fieldValue;
+    }
+
     return false;
   };
 
@@ -153,7 +187,7 @@ export const useCitizenForm = () => {
       return;
     }
 
-    const isStepValid = await form.trigger([...fields] as FieldPath<CitizenSchema>[]);
+    let isStepValid = await form.trigger([...fields] as FieldPath<CitizenSchema>[]);
 
     if (isStepValid) {
       let nextStepIndex = currentStep;

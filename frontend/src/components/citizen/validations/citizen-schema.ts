@@ -15,6 +15,32 @@ export const addressSchema = z.object({
     .regex(/^[0-9]{2}-[0-9]{3}$/, "Kod pocztowy musi składać się z 5 cyfr"),
 });
 
+// Schemat pełnomocnika (strict)
+export const proxySchema = z.object({
+  name: z.string().min(1, "Imię i nazwisko pełnomocnika jest wymagane"),
+  pesel: z.string().length(11, "PESEL pełnomocnika musi mieć 11 cyfr").regex(/^\d+$/, "PESEL musi składać się tylko z cyfr"),
+  identityType: z.string().min(1, "Wybierz rodzaj dokumentu"),
+  identitySeries: z
+    .string()
+    .min(3, "Seria dokumentu jest wymagana (3 znaki)")
+    .max(3, "Seria dokumentu może zawierać maksymalnie 3 znaki")
+    .regex(/^[A-Z]+$/, "Seria dokumentu może składać się tylko z dużych liter"),
+  identityNumber: z
+    .string()
+    .min(6, "Numer dokumentu jest wymagany (6 znaków)")
+    .max(6, "Numer dokumentu może zawierać maksymalnie 6 znaków")
+    .regex(/^[0-9]+$/, "Numer dokumentu może składać się tylko z cyfr"),
+  phoneNumber: z.string().optional(),
+  address: addressSchema,
+});
+
+// Schemat świadka (strict)
+export const witnessSchema = z.object({
+  name: z.string().min(1, "Imię i nazwisko świadka jest wymagane"),
+  address: addressSchema,
+  testimony: z.string().min(20, "Zeznanie świadka jest wymagane (minimum 20 znaków)"),
+});
+
 export const citizenSchema = z.object({
   pesel: z.string().length(11, "PESEL musi mieć 11 cyfr").regex(/^\d+$/, "PESEL musi składać się tylko z cyfr"),
 
@@ -120,6 +146,12 @@ export const citizenSchema = z.object({
 
   livesAbroad: z.boolean().optional(),
 
+  isProxy: z.boolean().optional(),
+  proxy: proxySchema.optional(),
+
+  hasWitness: z.boolean().optional(),
+  witness: witnessSchema.optional(),
+
   accident: z.object({
     date: z.date({ message: "Data wypadku jest wymagana" }),
     time: z.string().min(1, "Godzina wypadku jest wymagana").regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Godzina musi być w formacie HH:MM"),
@@ -143,6 +175,33 @@ export const citizenSchema = z.object({
   }).optional(),
 
   documents: z.array(z.instanceof(File)).optional(),
+}).superRefine((data, ctx) => {
+  if (data.isProxy) {
+    if (!data.proxy?.name || data.proxy.name.trim().length === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Imię i nazwisko pełnomocnika jest wymagane",
+        path: ["proxy", "name"],
+      });
+    }
+  }
+
+  if (data.hasWitness) {
+    if (!data.witness?.name || data.witness.name.trim().length === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Imię i nazwisko świadka jest wymagane",
+        path: ["witness", "name"],
+      });
+    }
+    if (!data.witness?.testimony || data.witness.testimony.trim().length < 20) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Zeznanie świadka jest wymagane (minimum 20 znaków)",
+        path: ["witness", "testimony"],
+      });
+    }
+  }
 });
 
 export type CitizenSchema = z.infer<typeof citizenSchema>;

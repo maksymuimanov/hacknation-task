@@ -5,6 +5,7 @@ import { Textarea } from "../ui/textarea";
 import { Calendar } from "../ui/calendar";
 import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
 import { Button } from "../ui/button";
+import { Checkbox } from "../ui/checkbox";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { pl } from "date-fns/locale";
@@ -16,7 +17,11 @@ export const AccidentBasicInfoStep = () => {
     register,
     formState: { errors },
     control,
+    watch,
+    setValue,
   } = useFormContext<CitizenSchema>();
+
+  const hasWitness = watch("hasWitness");
 
   return (
     <div className="space-y-4">
@@ -122,6 +127,22 @@ export const AccidentBasicInfoStep = () => {
           {...register("accident.location")}
         />
         {errors.accident?.location && <p className="text-xs text-destructive">{errors.accident.location.message}</p>}
+      </div>
+
+      <div className="flex items-start space-x-3 pt-4 border-t border-border/50">
+        <Checkbox
+          id="hasWitness"
+          checked={hasWitness}
+          onCheckedChange={(checked) => setValue("hasWitness", checked === true)}
+        />
+        <div className="space-y-1">
+          <Label htmlFor="hasWitness" className="font-medium cursor-pointer">
+            Jest świadek wypadku
+          </Label>
+          <p className="text-xs text-muted-foreground">
+            Zaznacz, jeśli są świadkowie, którzy widzieli wypadek lub mają o nim wiedzę
+          </p>
+        </div>
       </div>
     </div>
   );

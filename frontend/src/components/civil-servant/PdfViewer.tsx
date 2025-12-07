@@ -13,7 +13,6 @@ import type { CaseDocument, AccidentCase } from "./types";
 import "react-pdf/dist/Page/TextLayer.css";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 
-// Configure worker
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.mjs",
   import.meta.url
@@ -23,10 +22,6 @@ interface PdfViewerProps {
   selectedCase: AccidentCase | null;
 }
 
-/**
- * PDF Viewer component with document tabs, pagination and zoom.
- * Follows Single Responsibility - only handles PDF display logic.
- */
 export function PdfViewer({ selectedCase }: PdfViewerProps) {
   const [numPages, setNumPages] = useState<number>(0);
   const [pageNumber, setPageNumber] = useState<number>(1);
@@ -56,10 +51,9 @@ export function PdfViewer({ selectedCase }: PdfViewerProps) {
     setPageNumber(1);
   }
 
-  // Empty state
   if (!selectedCase) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-muted/20">
+      <div className="flex-1 flex items-center justify-center bg-muted/30">
         <div className="text-center space-y-3 p-8">
           <FileText className="h-16 w-16 mx-auto text-muted-foreground/30" />
           <p className="text-muted-foreground">
@@ -71,16 +65,15 @@ export function PdfViewer({ selectedCase }: PdfViewerProps) {
   }
 
   return (
-    <div className="flex-1 flex flex-col h-full overflow-hidden bg-muted/10">
-      {/* Document Tabs */}
-      <div className="border-b border-border bg-card/50 px-2 pt-2 flex gap-1 overflow-x-auto">
+    <div className="flex-1 flex flex-col h-full overflow-hidden bg-muted/20">
+      <div className="border-b border-border border-primary bg-card pt-2 flex gap-1 overflow-x-auto">
         {selectedCase.documents.map((doc, idx) => (
           <button
             key={doc.type}
             onClick={() => handleDocumentChange(idx)}
-            className={`px-3 py-2 text-sm rounded-t-md border border-b-0 transition-colors whitespace-nowrap ${activeDocIndex === idx
-                ? "bg-background border-border text-foreground font-medium"
-                : "bg-transparent border-transparent text-muted-foreground hover:text-foreground hover:bg-muted/50"
+            className={`px-4 py-2 text-sm rounded-t-md border border-b-0 transition-colors whitespace-nowrap ${activeDocIndex === idx
+              ? "bg-background border-border text-foreground font-medium"
+              : "bg-transparent border-transparent text-muted-foreground hover:text-foreground hover:bg-accent/50"
               }`}
           >
             {doc.name}
@@ -88,9 +81,8 @@ export function PdfViewer({ selectedCase }: PdfViewerProps) {
         ))}
       </div>
 
-      {/* Toolbar */}
-      <div className="h-12 border-b border-border/50 flex items-center justify-between px-4 bg-background/80 backdrop-blur-sm">
-        <div className="flex items-center gap-1 text-sm text-muted-foreground">
+      <div className="h-12 border-b border-border flex items-center justify-between px-4 bg-card">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
           {isLoading ? (
             <Loader2 className="h-4 w-4 animate-spin" />
           ) : (
@@ -108,7 +100,7 @@ export function PdfViewer({ selectedCase }: PdfViewerProps) {
           >
             <ZoomOut className="h-4 w-4" />
           </Button>
-          <span className="text-xs w-12 text-center tabular-nums">
+          <span className="text-xs w-12 text-center tabular-nums text-muted-foreground">
             {Math.round(scale * 100)}%
           </span>
           <Button
@@ -140,8 +132,7 @@ export function PdfViewer({ selectedCase }: PdfViewerProps) {
         </div>
       </div>
 
-      {/* PDF Display */}
-      <div className="flex-1 overflow-auto p-6 flex justify-center">
+      <div className="flex-1 overflow-auto p-6 flex justify-center bg-muted/10">
         {activeDocument && (
           <Document
             file={activeDocument.url}
@@ -152,7 +143,7 @@ export function PdfViewer({ selectedCase }: PdfViewerProps) {
                 <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
               </div>
             }
-            className="shadow-lg rounded-lg overflow-hidden"
+            className="shadow-lg rounded-lg overflow-hidden border border-border"
           >
             <Page
               pageNumber={pageNumber}

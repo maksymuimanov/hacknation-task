@@ -48,7 +48,7 @@ function Citizen() {
             {pdfBlob && (
               <Button onClick={redownloadFiles} variant="outline" className="w-full">
                 <Download className="mr-2 h-4 w-4" />
-                Pobierz PDF ponownie
+                Pobierz pliki ponownie
               </Button>
             )}
             <Button onClick={resetForm} variant="outline" className="w-full">

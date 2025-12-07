@@ -13,10 +13,39 @@ export const SummaryStep = () => {
   const { formatDate, formatAddress, getDocumentTypeName, getCorrespondenceTypeName } =
     useSummaryFormatters();
 
+  // Helper do formatowania adresu pełnomocnika/świadka
+  const formatOptionalAddress = (address?: {
+    street?: string;
+    houseNumber?: string;
+    apartmentNumber?: string;
+    zipCode?: string;
+    city?: string;
+    country?: string;
+  }) => {
+    if (!address?.street && !address?.city) return undefined;
+    const parts = [];
+    if (address.street) {
+      parts.push(address.street);
+      if (address.houseNumber) {
+        parts[0] += ` ${address.houseNumber}`;
+        if (address.apartmentNumber) parts[0] += `/${address.apartmentNumber}`;
+      }
+    }
+    if (address.zipCode && address.city) {
+      parts.push(`${address.zipCode} ${address.city}`);
+    } else if (address.city) {
+      parts.push(address.city);
+    }
+    if (address.country && address.country !== "Polska") {
+      parts.push(address.country);
+    }
+    return parts.join(", ");
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-2 p-3 rounded-lg bg-muted border border-border">
-        <CheckCircle2 className="h-4 w-4 flex-shrink-0 text-foreground" />
+        <CheckCircle2 className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
         <span className="text-sm text-muted-foreground">Sprawdź dane przed zapisaniem.</span>
       </div>
 
@@ -34,6 +63,28 @@ export const SummaryStep = () => {
         />
         <Row label="Telefon" value={data.phoneNumber} />
       </Section>
+
+      {data.isProxy && data.proxy?.name && (
+        <Section title="Dane pełnomocnika">
+          <Row label="Imię i nazwisko" value={data.proxy.name} />
+          <Row label="PESEL" value={data.proxy.pesel} />
+          {data.proxy.identityType && (
+            <>
+              <Row label="Dokument" value={getDocumentTypeName(data.proxy.identityType)} />
+              <Row
+                label="Seria i numer"
+                value={
+                  data.proxy.identitySeries && data.proxy.identityNumber
+                    ? `${data.proxy.identitySeries} ${data.proxy.identityNumber}`
+                    : undefined
+                }
+              />
+            </>
+          )}
+          <Row label="Telefon" value={data.proxy.phoneNumber} />
+          <Row label="Adres" value={formatOptionalAddress(data.proxy.address)} />
+        </Section>
+      )}
 
       <Section title="Urodzenie">
         <Row label="Data" value={formatDate(data.birth?.date)} />
@@ -93,6 +144,15 @@ export const SummaryStep = () => {
             />
             <LongRow label="Miejsce wypadku" value={data.accident.location} />
           </Section>
+
+          {/* Sekcja świadka - gdy hasWitness === true */}
+          {data.hasWitness && data.witness?.name && (
+            <Section title="Dane świadka">
+              <Row label="Imię i nazwisko" value={data.witness.name} />
+              <Row label="Adres" value={formatOptionalAddress(data.witness.address)} />
+              <LongRow label="Zeznanie świadka" value={data.witness.testimony} />
+            </Section>
+          )}
 
           <Section title="Urazy i pomoc medyczna">
             <LongRow label="Rodzaj urazów" value={data.accident.injuries} />
