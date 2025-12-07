@@ -1,71 +1,16 @@
 import { useFormContext } from "react-hook-form";
-import { format } from "date-fns";
-import { pl } from "date-fns/locale";
 import type { CitizenSchema } from "./validations/citizen-schema";
 import { CheckCircle2 } from "lucide-react";
+import { useSummaryFormatters } from "./hooks/useSummaryFormatters";
+import { Section, Row, LongRow } from "./SummaryComponents";
+import { NextStepsInfo } from "./NextStepsInfo";
 
 export const SummaryStep = () => {
   const { watch } = useFormContext<CitizenSchema>();
   const data = watch();
 
-  const formatDate = (date?: Date) => {
-    if (!date) return "-";
-    return format(date, "d MMMM yyyy", { locale: pl });
-  };
-
-  const formatAddress = (address?: {
-    street?: string;
-    houseNumber?: string;
-    apartmentNumber?: string;
-    zipCode?: string;
-    city?: string;
-  }) => {
-    if (!address?.street) return "-";
-
-    const parts = [address.street, address.houseNumber, address.apartmentNumber ? `/${address.apartmentNumber}` : ""]
-      .filter(Boolean)
-      .join(" ");
-
-    return `${parts}, ${address.zipCode} ${address.city}`;
-  };
-
-  const getDocumentTypeName = (type?: string) => {
-    const types: Record<string, string> = {
-      ID_CARD: "Dowód osobisty",
-      PASSPORT: "Paszport",
-    };
-    return type ? types[type] || type : "-";
-  };
-
-  const getCorrespondenceTypeName = (type?: string) => {
-    const types: Record<string, string> = {
-      ADDRESS: "Adres",
-      POSTE_RESTANTE: "Poste restante",
-      PO_BOX: "Skrytka pocztowa",
-    };
-    return type ? types[type] || type : "-";
-  };
-
-  const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
-    <div className="space-y-2">
-      <h3 className="text-sm font-medium text-muted-foreground">{title}</h3>
-      <div className="text-sm space-y-1">{children}</div>
-    </div>
-  );
-
-  const Row = ({ label, value }: { label: string; value?: string | number | null }) => (
-    <div className="flex justify-between gap-4">
-      <span className="text-muted-foreground flex-shrink-0">{label}</span>
-      <span className="font-medium text-right break-words">{value || "-"}</span>
-    </div>
-  );
-
-  const LongRow = ({ label, value }: { label: string; value?: string | number | null }) => (
-    <div className="space-y-1">
-      <span className="text-muted-foreground text-xs">{label}</span>
-      <p className="font-medium text-sm break-words whitespace-pre-wrap">{value || "-"}</p>
-    </div>
-  );
+  const { formatDate, formatAddress, getDocumentTypeName, getCorrespondenceTypeName } =
+    useSummaryFormatters();
 
   return (
     <div className="space-y-6">
@@ -188,6 +133,8 @@ export const SummaryStep = () => {
           </Section>
         </>
       )}
+
+      <NextStepsInfo />
     </div>
   );
 };
