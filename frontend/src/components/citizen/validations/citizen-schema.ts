@@ -128,7 +128,7 @@ export const citizenSchema = z.object({
     plannedWorkEnd: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Godzina musi być w formacie HH:MM"),
 
     injuries: z.string().min(10, "Opisz rodzaj doznanych urazów (minimum 10 znaków)"),
-    medicalAidProvided: z.boolean(),
+    medicalAidProvided: z.boolean().optional(),
     medicalFacilityName: z.string().optional(),
     medicalFacilityAddress: z.string().optional(),
     hospitalizationPeriod: z.string().optional(),
