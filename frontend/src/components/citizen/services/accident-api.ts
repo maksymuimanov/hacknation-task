@@ -270,13 +270,13 @@ export const submitAccidentInfo = async (data: CitizenSchema, userId: string): P
   return result.id || result.accidentInfoId || result;
 };
 
-export const generateAccidentPdf = async (userId: string, accidentInfoId: string): Promise<Blob> => {
+export const generateAccidentFile = async (userId: string, accidentInfoId: string, fileType: string): Promise<Blob> => {
   const payload: PdfPayload = {
     userId,
     accidentInfoId,
   };
 
-  const response = await fetch(`${API_BASE_URL}/accidents/pdf`, {
+  const response = await fetch(`${API_BASE_URL}/accidents/files/${fileType}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -286,13 +286,13 @@ export const generateAccidentPdf = async (userId: string, accidentInfoId: string
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => null);
-    throw new Error(errorData?.message || `Błąd podczas generowania PDF: ${response.status}`);
+    throw new Error(errorData?.message || `Błąd podczas generowania pliku: ${response.status}`);
   }
 
   return await response.blob();
 };
 
-export const downloadPdf = (blob: Blob, filename: string = "zgloszenie-wypadku.pdf"): void => {
+export const downloadFile = (blob: Blob, filename: string): void => {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;

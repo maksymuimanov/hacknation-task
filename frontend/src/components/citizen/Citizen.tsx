@@ -21,7 +21,7 @@ function Citizen() {
     submissionPhase,
     pdfBlob,
     resetForm,
-    redownloadPdf,
+    redownloadFiles,
     getPhaseMessage,
   } = useCitizenForm();
 
@@ -46,7 +46,7 @@ function Citizen() {
           </CardHeader>
           <CardFooter className="flex flex-col gap-3 pt-4 border-t border-border/50">
             {pdfBlob && (
-              <Button onClick={redownloadPdf} variant="outline" className="w-full">
+              <Button onClick={redownloadFiles} variant="outline" className="w-full">
                 <Download className="mr-2 h-4 w-4" />
                 Pobierz PDF ponownie
               </Button>

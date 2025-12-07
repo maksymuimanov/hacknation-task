@@ -6,8 +6,8 @@ import { STEPS } from "../constants/steps-config";
 import {
   submitInjuredPerson,
   submitAccidentInfo,
-  generateAccidentPdf,
-  downloadPdf,
+  generateAccidentFile,
+  downloadFile,
 } from "../services/accident-api";
 
 export type SubmissionPhase = "person" | "accident" | "pdf" | null;
@@ -19,6 +19,7 @@ export const useCitizenForm = () => {
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submissionPhase, setSubmissionPhase] = useState<SubmissionPhase>(null);
   const [pdfBlob, setPdfBlob] = useState<Blob | null>(null);
+  const [docxBlob, setDocxBlob] = useState<Blob | null>(null);
 
   const totalSteps = STEPS.length;
   const progress = (currentStep / totalSteps) * 100;
@@ -104,13 +105,16 @@ export const useCitizenForm = () => {
       setSubmissionPhase("accident");
       const accidentInfoId = await submitAccidentInfo(data, userId);
 
-      // Step 3: Generate PDF
+      // Step 3: Generate the file
       setSubmissionPhase("pdf");
-      const pdf = await generateAccidentPdf(userId, accidentInfoId);
-      setPdfBlob(pdf);
+      const pdfFile = await generateAccidentFile(userId, accidentInfoId, "pdf");
+      const docxFile = await generateAccidentFile(userId, accidentInfoId, "docx");
+      setPdfBlob(pdfFile);
+      setDocxBlob(docxFile);
 
-      // Auto-download the PDF
-      downloadPdf(pdf);
+      // Auto-download the files
+      downloadFile(pdfFile, "zgloszenie-wypadku.pdf");
+      downloadFile(docxFile, "zgloszenie-wypadku.docx");
 
       setSubmitSuccess(true);
     } catch (error) {
@@ -122,9 +126,13 @@ export const useCitizenForm = () => {
     }
   };
 
-  const redownloadPdf = () => {
+  const redownloadFiles = () => {
     if (pdfBlob) {
-      downloadPdf(pdfBlob);
+      downloadFile(pdfBlob, "zgloszenie-wypadku.pdf");
+    }
+
+    if (docxBlob) {
+      downloadFile(docxBlob, "zgloszenie-wypadku.docx");
     }
   };
 
@@ -183,6 +191,7 @@ export const useCitizenForm = () => {
     setSubmitSuccess(false);
     setSubmissionPhase(null);
     setPdfBlob(null);
+    setDocxBlob(null);
   };
 
   return {
@@ -199,7 +208,7 @@ export const useCitizenForm = () => {
     nextStep,
     prevStep,
     resetForm,
-    redownloadPdf,
+    redownloadFiles,
     getPhaseMessage,
   };
 };
