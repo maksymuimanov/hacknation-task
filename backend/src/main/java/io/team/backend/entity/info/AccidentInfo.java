@@ -33,8 +33,11 @@ public class AccidentInfo {
     private LocalTime endTime;
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> traumaTypes;
+    @Column(length = 512)
     private String description;
+    @Column(length = 512)
     private String causeDescription;
+    @Column(length = 512)
     private String locationDescription;
     @ManyToOne(cascade = CascadeType.ALL)
     private Help firstAid;

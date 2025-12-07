@@ -14,8 +14,11 @@ public class Address {
     @Id
     @GeneratedValue
     private Long id;
+    @Column(length = 512)
     private String country;
+    @Column(length = 512)
     private String street;
+    @Column(length = 512)
     private String city;
     private Integer houseNumber;
     private Integer apartmentNumber;

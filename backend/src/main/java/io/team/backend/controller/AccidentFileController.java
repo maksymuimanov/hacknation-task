@@ -28,7 +28,7 @@ public class AccidentFileController {
     public ResponseEntity<byte[]> postDocx(@RequestBody AccidentFileRequest pdfRequest) {
         byte[] bytes = pdfBuilder.buildDocxBytes(pdfRequest);
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"output.docx\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"sample.docx\"")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(bytes);
     }

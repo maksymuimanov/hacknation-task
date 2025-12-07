@@ -17,6 +17,7 @@ public class Help {
     private Long id;
     @Convert(converter = YesNoConverter.class)
     private Boolean provided;
+    @Column(length = 512)
     private String name;
     @ManyToOne(cascade = CascadeType.ALL)
     private Address address;

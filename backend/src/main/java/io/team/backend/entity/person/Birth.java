@@ -17,5 +17,6 @@ public class Birth {
     private Long id;
     @Temporal(TemporalType.DATE)
     private LocalDate date;
+    @Column(length = 512)
     private String city;
 }

@@ -20,12 +20,15 @@ public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    @Column(length = 512)
     private String pesel;
     @OneToOne(cascade = CascadeType.ALL)
     private Identity identity;
+    @Column(length = 512)
     private String name;
     @ManyToOne(cascade = CascadeType.ALL)
     private Birth birth;
+    @Column(length = 512)
     private String phoneNumber;
     @ManyToOne(cascade = CascadeType.ALL)
     private Address residentialAddress;
