@@ -1,6 +1,6 @@
 import type { CitizenSchema, AddressSchema } from "../validations/citizen-schema";
 
-const API_BASE_URL = "https://hacknation-task-backend-latest.onrender.com/api/v1.0/api/v1.0/accidents";
+const API_BASE_URL = "https://hacknation-task-backend-latest.onrender.com/api/v1.0";
 
 // API Types
 interface ApiAddress {
