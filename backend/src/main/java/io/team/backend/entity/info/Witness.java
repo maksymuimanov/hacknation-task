@@ -14,6 +14,7 @@ public class Witness {
     @Id
     @GeneratedValue
     private Long id;
+    @Column(length = 512)
     private String name;
     @ManyToOne(cascade = CascadeType.ALL)
     private Address address;

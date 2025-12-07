@@ -1,9 +1,6 @@
 package io.team.backend.entity.person;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -16,8 +13,11 @@ public class Identity {
     @Id
     @GeneratedValue
     private Long id;
+    @Column(length = 512)
     private String type;
+    @Column(length = 512)
     private String series;
+    @Column(length = 512)
     private String number;
 
     @Override

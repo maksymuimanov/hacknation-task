@@ -80,7 +80,7 @@ public class AccidentFileBuilderImpl implements AccidentFileBuilder {
         }
 
         CorrespondenceAddress correspondenceAddress = person.getCorrespondenceAddress();
-        if (correspondenceAddress != null) {
+        if (correspondenceAddress != null && correspondenceAddress.getType() != null) {
             CorrespondenceAddress.Type type = correspondenceAddress.getType();
             switch (type) {
                 case ADDRESS -> {

@@ -14,8 +14,10 @@ public class AdditionalData {
     @Id
     @GeneratedValue
     private Long id;
+    @Column(length = 512)
     private String name;
     @Transient
     private MultipartFile file;
+    @Column(length = 512)
     private String path;
 }

@@ -30,8 +30,11 @@ public class CorrespondenceAddress extends Address {
         @Id
         @GeneratedValue
         private Long id;
+        @Column(length = 512)
         private String postOfficeName;
+        @Column(length = 512)
         private String zipCode;
+        @Column(length = 512)
         private String number;
     }
 
@@ -43,7 +46,9 @@ public class CorrespondenceAddress extends Address {
         @Id
         @GeneratedValue
         private Long id;
+        @Column(length = 512)
         private String postOfficeName;
+        @Column(length = 512)
         private String zipCode;
     }
 }

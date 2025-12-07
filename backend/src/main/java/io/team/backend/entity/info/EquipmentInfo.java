@@ -16,10 +16,13 @@ public class EquipmentInfo {
     private Long id;
     @Convert(converter = YesNoConverter.class)
     private Boolean used;
+    @Column(length = 512)
     private String name;
+    @Column(length = 512)
     private String condition;
     @Convert(converter = YesNoConverter.class)
     private Boolean usedAccordingInstructions;
+    @Column(length = 512)
     private String useDescription;
     @Convert(converter = YesNoConverter.class)
     private Boolean hasCertificate;
