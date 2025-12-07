@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.domain.Persistable;
 
 @Getter @Setter
 @RequiredArgsConstructor
@@ -14,9 +13,9 @@ import org.springframework.data.domain.Persistable;
 public class CorrespondenceAddress extends Address {
     @Enumerated(EnumType.STRING)
     private Type type;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     private PosteRestante posteRestante;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     private PoBox poBox;
 
     public enum Type {
@@ -27,40 +26,24 @@ public class CorrespondenceAddress extends Address {
     @RequiredArgsConstructor
     @Entity
     @Table(name = "po_boxex")
-    public static class PoBox implements Persistable<String> {
+    public static class PoBox {
         @Id
+        @GeneratedValue
+        private Long id;
         private String postOfficeName;
         private String zipCode;
         private String number;
-
-        @Override
-        public String getId() {
-            return postOfficeName;
-        }
-
-        @Override
-        public boolean isNew() {
-            return this.getId() == null;
-        }
     }
 
     @Getter @Setter
     @RequiredArgsConstructor
     @Entity
     @Table(name = "poste_restantes")
-    public static class PosteRestante implements Persistable<String> {
+    public static class PosteRestante {
         @Id
+        @GeneratedValue
+        private Long id;
         private String postOfficeName;
         private String zipCode;
-
-        @Override
-        public String getId() {
-            return postOfficeName;
-        }
-
-        @Override
-        public boolean isNew() {
-            return this.getId() == null;
-        }
     }
 }
