@@ -88,7 +88,7 @@ function Citizen() {
           <CardContent>
             <FormProvider {...form}>
               <form onSubmit={(e) => e.preventDefault()}>
-                <div className="animate-in fade-in duration-200 max-h-[55vh] overflow-y-auto p-3">
+                <div className="animate-in fade-in duration-200 max-h-full overflow-y-auto p-3">
                   <CurrentComponent />
                 </div>
               </form>

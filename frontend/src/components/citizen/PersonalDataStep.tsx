@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useFormContext, Controller } from "react-hook-form";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -10,6 +11,14 @@ export const PersonalDataStep = () => {
     formState: { errors },
     control,
   } = useFormContext<CitizenSchema>();
+
+  const [nip, setNip] = useState<string>("");
+
+  const mockupNip = {
+    nip: "573-000-00-00",
+    address: "ul. Testowa 1, 00-000 Test",
+    pkd: "Test PKD",
+  };
 
   return (
     <div className="space-y-4">
@@ -27,6 +36,21 @@ export const PersonalDataStep = () => {
         </Label>
         <Input id="pesel" placeholder="12345678901" maxLength={11} {...register("pesel")} />
         {errors.pesel && <p className="text-xs text-destructive">{errors.pesel.message}</p>}
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="nip">
+          NIP (opcjonalnie)
+        </Label>
+        <Input id="nip" placeholder="573-000-00-00" onChange={(e) => setNip(e.target.value)} />
+
+        {nip === "573-000-00-00" && (
+          <div className="flex flex-col gap-2 p-4 rounded-md bg-accent/60 border border-accent/30 text-sm">
+            <p className="text-foreground/80"><span className="font-medium text-black">NIP:</span> {mockupNip.nip}</p>
+            <p className="text-foreground/80"><span className="font-medium text-black">Adres:</span> {mockupNip.address}</p>
+            <p className="text-foreground/80"><span className="font-medium text-black">PKD:</span> {mockupNip.pkd}</p>
+          </div>
+        )}
       </div>
 
       <div className="space-y-2">
