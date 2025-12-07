@@ -8,7 +8,10 @@ export const AddressStep = () => {
     register,
     formState: { errors },
     setValue,
+    watch,
   } = useFormContext<CitizenSchema>();
+
+  const livesAbroad = watch("livesAbroad");
 
   return (
     <div className="space-y-4">
@@ -68,7 +71,7 @@ export const AddressStep = () => {
       <label className="flex items-center gap-2 pt-2 cursor-pointer m-0">
         <input
           type="checkbox"
-          checked={false}
+          checked={livesAbroad}
           onChange={(e) => setValue("livesAbroad", e.target.checked)}
           className="h-4 w-4 rounded border-input accent-primary"
         />

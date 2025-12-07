@@ -1,6 +1,6 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "../ui/card";
 import { Button } from "../ui/button";
-import { ArrowLeft, ArrowRight, Loader2, CheckCircle, RotateCcw, Home } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2, CheckCircle, RotateCcw, Home, Download } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useCitizenForm } from "./hooks/useCitizenForm";
 import { FormProvider } from "react-hook-form";
@@ -18,7 +18,11 @@ function Citizen() {
     isSubmitting,
     submitError,
     submitSuccess,
+    submissionPhase,
+    pdfBlob,
     resetForm,
+    redownloadPdf,
+    getPhaseMessage,
   } = useCitizenForm();
 
   const currentStepConfig = STEPS[currentStep - 1];
@@ -37,10 +41,16 @@ function Citizen() {
             </div>
             <CardTitle className="text-xl font-semibold text-green-700">Formularz wysłany!</CardTitle>
             <CardDescription className="text-sm mt-2">
-              Twoje zgłoszenie zostało pomyślnie zapisane. Otrzymasz potwierdzenie na podany adres.
+              Twoje zgłoszenie zostało pomyślnie zapisane. Dokument PDF został pobrany automatycznie.
             </CardDescription>
           </CardHeader>
           <CardFooter className="flex flex-col gap-3 pt-4 border-t border-border/50">
+            {pdfBlob && (
+              <Button onClick={redownloadPdf} variant="outline" className="w-full">
+                <Download className="mr-2 h-4 w-4" />
+                Pobierz PDF ponownie
+              </Button>
+            )}
             <Button onClick={resetForm} variant="outline" className="w-full">
               <RotateCcw className="mr-2 h-4 w-4" />
               Wypełnij nowy formularz
@@ -88,7 +98,7 @@ function Citizen() {
           <CardContent>
             <FormProvider {...form}>
               <form onSubmit={(e) => e.preventDefault()}>
-                <div className="animate-in fade-in duration-200 max-h-[55vh] overflow-y-auto p-3">
+                <div className="animate-in fade-in duration-200 max-h-full overflow-y-auto p-3">
                   <CurrentComponent />
                 </div>
               </form>
@@ -121,11 +131,11 @@ function Citizen() {
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Wysyłanie...
+                  {getPhaseMessage(submissionPhase)}
                 </>
               ) : isLastStep ? (
                 <>
-                  Wyślij zgłoszenie
+                  Zapisz zgłoszenie
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </>
               ) : (
@@ -143,3 +153,4 @@ function Citizen() {
 }
 
 export default Citizen;
+
