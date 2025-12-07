@@ -13,7 +13,6 @@ export const SummaryStep = () => {
   const { formatDate, formatAddress, getDocumentTypeName, getCorrespondenceTypeName } =
     useSummaryFormatters();
 
-  // Helper do formatowania adresu pełnomocnika/świadka
   const formatOptionalAddress = (address?: {
     street?: string;
     houseNumber?: string;
@@ -179,7 +178,7 @@ export const SummaryStep = () => {
 
       {data.documents && data.documents.length > 0 && (
         <>
-          <div className="border-t pt-4 mt-6">
+          <div className="border-t border-border/50 pt-4 mt-6">
             <h2 className="text-base font-semibold mb-4">Załączone dokumenty</h2>
           </div>
 

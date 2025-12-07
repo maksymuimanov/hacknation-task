@@ -105,6 +105,25 @@ export const useCitizenForm = () => {
         },
         testimony: "",
       },
+      accident: {
+        date: undefined,
+        time: "",
+        location: "",
+        plannedWorkStart: "",
+        plannedWorkEnd: "",
+        injuries: "",
+        medicalAidProvided: false,
+        medicalFacilityName: "",
+        medicalFacilityAddress: "",
+        hospitalizationPeriod: "",
+        detailedDescription: "",
+        activitiesBeforeAccident: "",
+        causeDescription: "",
+        legalProceedingsConducted: false,
+        proceedingAuthority: "",
+        proceedingAuthorityAddress: "",
+      },
+      documents: [],
     },
   });
 
@@ -115,7 +134,7 @@ export const useCitizenForm = () => {
       case "accident":
         return "Wysyłanie informacji o wypadku...";
       case "pdf":
-        return "Generowanie dokumentu PDF...";
+        return "Generowanie plików...";
       default:
         return "Wysyłanie...";
     }
@@ -168,11 +187,10 @@ export const useCitizenForm = () => {
     const step = STEPS[stepIndex];
     if (!step) return false;
 
-    // Check if step has a conditional field
     if ("conditional" in step && step.conditional) {
       const conditionalField = step.conditional;
       const fieldValue = form.watch(conditionalField as any);
-      // Skip this step if the conditional checkbox is NOT checked
+
       return !fieldValue;
     }
 

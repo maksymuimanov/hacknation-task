@@ -1,6 +1,27 @@
 import type { CitizenSchema, AddressSchema } from "../validations/citizen-schema";
 
 const API_BASE_URL = "https://hacknation-task-backend-latest.onrender.com/api/v1.0";
+const REQUEST_TIMEOUT = 60000;
+
+const fetchWithTimeout = async (url: string, options: RequestInit, timeout = REQUEST_TIMEOUT): Promise<Response> => {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    });
+    return response;
+  } catch (error) {
+    if (error instanceof Error && error.name === "AbortError") {
+      throw new Error("Przekroczono limit czasu oczekiwania na odpowiedź serwera. Spróbuj ponownie.");
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+};
 
 // API Types
 interface ApiAddress {
@@ -233,7 +254,9 @@ export const prepareAccidentInfoPayload = (data: CitizenSchema, userId: string):
 export const submitInjuredPerson = async (data: CitizenSchema): Promise<string> => {
   const payload = prepareInjuredPersonPayload(data);
 
-  const response = await fetch(`${API_BASE_URL}/accidents/persons/injured`, {
+  console.log("[API] Wysyłanie danych osobowych...", payload);
+
+  const response = await fetchWithTimeout(`${API_BASE_URL}/accidents/persons/injured`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -243,17 +266,21 @@ export const submitInjuredPerson = async (data: CitizenSchema): Promise<string> 
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => null);
+    console.error("[API] Błąd odpowiedzi:", response.status, errorData);
     throw new Error(errorData?.message || `Błąd podczas wysyłania danych osobowych: ${response.status}`);
   }
 
   const result = await response.json();
+  console.log("[API] Odpowiedź:", result);
   return result.id || result.userId || result;
 };
 
 export const submitAccidentInfo = async (data: CitizenSchema, userId: string): Promise<string> => {
   const payload = prepareAccidentInfoPayload(data, userId);
 
-  const response = await fetch(`${API_BASE_URL}/accidents/infos`, {
+  console.log("[API] Wysyłanie informacji o wypadku...", payload);
+
+  const response = await fetchWithTimeout(`${API_BASE_URL}/accidents/infos`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -263,10 +290,12 @@ export const submitAccidentInfo = async (data: CitizenSchema, userId: string): P
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => null);
+    console.error("[API] Błąd odpowiedzi:", response.status, errorData);
     throw new Error(errorData?.message || `Błąd podczas wysyłania informacji o wypadku: ${response.status}`);
   }
 
   const result = await response.json();
+  console.log("[API] Odpowiedź:", result);
   return result.id || result.accidentInfoId || result;
 };
 
@@ -276,7 +305,9 @@ export const generateAccidentFile = async (userId: string, accidentInfoId: strin
     accidentInfoId,
   };
 
-  const response = await fetch(`${API_BASE_URL}/accidents/files/${fileType}`, {
+  console.log(`[API] Generowanie pliku ${fileType}...`, payload);
+
+  const response = await fetchWithTimeout(`${API_BASE_URL}/accidents/files/${fileType}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -286,9 +317,11 @@ export const generateAccidentFile = async (userId: string, accidentInfoId: strin
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => null);
+    console.error("[API] Błąd odpowiedzi:", response.status, errorData);
     throw new Error(errorData?.message || `Błąd podczas generowania pliku: ${response.status}`);
   }
 
+  console.log(`[API] Plik ${fileType} wygenerowany pomyślnie`);
   return await response.blob();
 };
 

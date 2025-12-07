@@ -23,7 +23,7 @@ function Home() {
                 <User className="w-10 h-10" />
               </div>
               <div className="space-y-2">
-                <CardTitle className="text-2xl">Asystent Przedsiębiorcy</CardTitle>
+                <CardTitle className="text-2xl">Asystent obywatelski</CardTitle>
                 <CardDescription className="text-base">
                   Zgłoś wypadek przy pracy, korzystając z inteligentnego kreatora.
                 </CardDescription>
@@ -42,7 +42,7 @@ function Home() {
                 <ShieldCheck className="w-10 h-10" />
               </div>
               <div className="space-y-2">
-                <CardTitle className="text-2xl">Panel Analityka ZUS</CardTitle>
+                <CardTitle className="text-2xl">Panel analityka ZUS</CardTitle>
                 <CardDescription className="text-base">
                   Weryfikuj zgłoszenia, analizuj dokumenty i generuj projekty decyzji.
                 </CardDescription>

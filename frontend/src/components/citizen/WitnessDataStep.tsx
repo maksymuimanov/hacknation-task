@@ -32,15 +32,17 @@ export const WitnessDataStep = () => {
         <div className="space-y-2">
           <Label htmlFor="witness.address.street">Ulica <span className="text-destructive">*</span></Label>
           <Input id="witness.address.street" placeholder="ul. Przykładowa" {...register("witness.address.street")} />
+          {errors.witness?.address?.street && <p className="text-xs text-destructive">{errors.witness.address.street.message}</p>}
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-2">
             <Label htmlFor="witness.address.houseNumber">Numer domu <span className="text-destructive">*</span></Label>
             <Input id="witness.address.houseNumber" placeholder="12" {...register("witness.address.houseNumber")} />
+            {errors.witness?.address?.houseNumber && <p className="text-xs text-destructive">{errors.witness.address.houseNumber.message}</p>}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="witness.address.apartmentNumber">Numer lokalu <span className="text-destructive">*</span></Label>
+            <Label htmlFor="witness.address.apartmentNumber">Numer lokalu</Label>
             <Input
               id="witness.address.apartmentNumber"
               placeholder="5"
