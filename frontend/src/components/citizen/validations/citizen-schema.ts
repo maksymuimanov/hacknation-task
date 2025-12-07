@@ -119,6 +119,30 @@ export const citizenSchema = z.object({
   businessAddress: addressSchema,
 
   livesAbroad: z.boolean().optional(),
+
+  accident: z.object({
+    date: z.date({ message: "Data wypadku jest wymagana" }),
+    time: z.string().min(1, "Godzina wypadku jest wymagana").regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Godzina musi być w formacie HH:MM"),
+    location: z.string().min(10, "Podaj szczegółowy opis miejsca wypadku (minimum 10 znaków)"),
+    plannedWorkStart: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Godzina musi być w formacie HH:MM"),
+    plannedWorkEnd: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Godzina musi być w formacie HH:MM"),
+
+    injuries: z.string().min(10, "Opisz rodzaj doznanych urazów (minimum 10 znaków)"),
+    medicalAidProvided: z.boolean().optional(),
+    medicalFacilityName: z.string().optional(),
+    medicalFacilityAddress: z.string().optional(),
+    hospitalizationPeriod: z.string().optional(),
+
+    detailedDescription: z.string().min(50, "Opisz szczegółowo okoliczności wypadku (minimum 50 znaków)"),
+    activitiesBeforeAccident: z.string().min(20, "Opisz czynności wykonywane przed wypadkiem (minimum 20 znaków)"),
+    causeDescription: z.string().min(20, "Opisz przyczynę wypadku (minimum 20 znaków)"),
+
+    legalProceedingsConducted: z.boolean().optional(),
+    proceedingAuthority: z.string().optional(),
+    proceedingAuthorityAddress: z.string().optional(),
+  }).optional(),
+
+  documents: z.array(z.instanceof(File)).optional(),
 });
 
 export type CitizenSchema = z.infer<typeof citizenSchema>;

@@ -4,7 +4,11 @@ import { AddressStep } from "../AddressStep";
 import { CorrespondenceAddressStep } from "../CorrespondenceAddressStep";
 import { BusinessAddressStep } from "../BusinessAddressStep";
 import { SummaryStep } from "../SummaryStep";
-import { User, Calendar, Home, Mail, Building2, CheckSquare } from "lucide-react";
+import { AccidentBasicInfoStep } from "../AccidentBasicInfoStep";
+import { AccidentInjuriesStep } from "../AccidentInjuriesStep";
+import { AccidentCircumstancesStep } from "../AccidentCircumstancesStep";
+import { DocumentUploadStep } from "../DocumentUploadStep";
+import { User, Calendar, Home, Mail, Building2, CheckSquare, AlertTriangle, Stethoscope, FileText, Upload } from "lucide-react";
 
 export const STEPS = [
   {
@@ -60,6 +64,38 @@ export const STEPS = [
   },
   {
     id: 6,
+    title: "Podstawowe informacje",
+    description: "Data, godzina i miejsce wypadku",
+    fields: ["accident.date", "accident.time", "accident.location"],
+    component: AccidentBasicInfoStep,
+    icon: AlertTriangle,
+  },
+  {
+    id: 7,
+    title: "Urazy i pomoc medyczna",
+    description: "Rodzaj urazów i pierwsza pomoc",
+    fields: ["accident.injuries", "accident.medicalAidProvided"],
+    component: AccidentInjuriesStep,
+    icon: Stethoscope,
+  },
+  {
+    id: 8,
+    title: "Opis okoliczności",
+    description: "Szczegółowy przebieg wypadku",
+    fields: ["accident.detailedDescription", "accident.activitiesBeforeAccident"],
+    component: AccidentCircumstancesStep,
+    icon: FileText,
+  },
+  {
+    id: 9,
+    title: "Załączniki",
+    description: "Dokumenty potwierdzające",
+    fields: ["documents"],
+    component: DocumentUploadStep,
+    icon: Upload,
+  },
+  {
+    id: 10,
     title: "Podsumowanie",
     description: "Sprawdź wprowadzone dane",
     fields: [],
@@ -69,3 +105,4 @@ export const STEPS = [
 ] as const;
 
 export type StepConfig = (typeof STEPS)[number];
+
